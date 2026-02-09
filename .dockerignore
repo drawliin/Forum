@@ -1,0 +1,6 @@
+.git
+.gitignore
+forum.db
+*.db
+*.log
+/data

@@ -1,0 +1,75 @@
+{{define "content"}}
+<section class="filters">
+  <div class="filters-block">
+    <h2>Categories</h2>
+    <div class="chip-row">
+      <a class="chip {{if eq .CategoryID 0}}active{{end}}" href="/">All</a>
+      {{range .Categories}}
+        <a class="chip {{if eq $.CategoryID .ID}}active{{end}}" href="/?category={{.ID}}">{{.Name}}</a>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="filters-block">
+    <h2>Filters</h2>
+    <div class="chip-row">
+      <a class="chip {{if eq .Filter ""}}active{{end}}" href="/">All Posts</a>
+      {{if .User}}
+        <a class="chip {{if eq .Filter "mine"}}active{{end}}" href="/?filter=mine">My Posts</a>
+        <a class="chip {{if eq .Filter "liked"}}active{{end}}" href="/?filter=liked">Liked Posts</a>
+      {{else}}
+        <span class="chip disabled">My Posts</span>
+        <span class="chip disabled">Liked Posts</span>
+      {{end}}
+    </div>
+  </div>
+</section>
+
+<section class="posts">
+  {{if .Posts}}
+    {{range .Posts}}
+      <article class="post-card">
+        <header>
+          <h3><a href="/post/{{.ID}}">{{.Title}}</a></h3>
+          <div class="meta">
+            <span>by {{.Author}}</span>
+            <span>{{formatUnix .CreatedAt}}</span>
+          </div>
+        </header>
+        <p class="excerpt">{{.Content}}</p>
+        <div class="categories">
+          {{range .Categories}}
+            <span class="tag">{{.Name}}</span>
+          {{end}}
+        </div>
+        <div class="reactions">
+          <span class="count">Likes {{.Likes}}</span>
+          <span class="count">Dislikes {{.Dislikes}}</span>
+          {{if $.User}}
+            <form class="inline" method="post" action="/post/{{.ID}}/react">
+              <input type="hidden" name="value" value="1">
+              <button type="submit" class="ghost">Like</button>
+            </form>
+            <form class="inline" method="post" action="/post/{{.ID}}/react">
+              <input type="hidden" name="value" value="-1">
+              <button type="submit" class="ghost">Dislike</button>
+            </form>
+          {{else}}
+            <span class="hint">Login to react</span>
+          {{end}}
+        </div>
+      </article>
+    {{end}}
+  {{else}}
+    <div class="empty-state">
+      <h3>No posts yet</h3>
+      <p>Be the first to start a conversation.</p>
+      {{if .User}}
+        <a class="primary" href="/post/new">Create a post</a>
+      {{else}}
+        <a class="primary" href="/register">Create an account</a>
+      {{end}}
+    </div>
+  {{end}}
+</section>
+{{end}}

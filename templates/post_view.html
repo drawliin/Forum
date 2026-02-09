@@ -1,0 +1,77 @@
+{{define "content"}}
+<section class="post-view">
+  <article class="post-card detail">
+    <header>
+      <h1>{{.Post.Title}}</h1>
+      <div class="meta">
+        <span>by {{.Post.Author}}</span>
+        <span>{{formatUnix .Post.CreatedAt}}</span>
+      </div>
+    </header>
+    <p>{{.Post.Content}}</p>
+    <div class="categories">
+      {{range .Post.Categories}}
+        <span class="tag">{{.Name}}</span>
+      {{end}}
+    </div>
+    <div class="reactions">
+      <span class="count">Likes {{.Post.Likes}}</span>
+      <span class="count">Dislikes {{.Post.Dislikes}}</span>
+      {{if .User}}
+        <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
+          <input type="hidden" name="value" value="1">
+          <button type="submit" class="ghost">Like</button>
+        </form>
+        <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
+          <input type="hidden" name="value" value="-1">
+          <button type="submit" class="ghost">Dislike</button>
+        </form>
+      {{else}}
+        <span class="hint">Login to react</span>
+      {{end}}
+    </div>
+  </article>
+
+  <section class="comments">
+    <h2>Comments</h2>
+    {{if .User}}
+      <form method="post" action="/post/{{.Post.ID}}/comment" class="comment-form">
+        <textarea name="content" rows="4" placeholder="Write a comment..." required></textarea>
+        <button type="submit" class="primary">Add comment</button>
+      </form>
+    {{else}}
+      <p class="muted">Log in to add a comment.</p>
+    {{end}}
+
+    {{if .Comments}}
+      {{range .Comments}}
+        <article class="comment-card">
+          <div class="meta">
+            <span>{{.Author}}</span>
+            <span>{{formatUnix .CreatedAt}}</span>
+          </div>
+          <p>{{.Content}}</p>
+          <div class="reactions">
+            <span class="count">Likes {{.Likes}}</span>
+            <span class="count">Dislikes {{.Dislikes}}</span>
+            {{if $.User}}
+              <form class="inline" method="post" action="/comment/{{.ID}}/react">
+                <input type="hidden" name="value" value="1">
+                <button type="submit" class="ghost">Like</button>
+              </form>
+              <form class="inline" method="post" action="/comment/{{.ID}}/react">
+                <input type="hidden" name="value" value="-1">
+                <button type="submit" class="ghost">Dislike</button>
+              </form>
+            {{else}}
+              <span class="hint">Login to react</span>
+            {{end}}
+          </div>
+        </article>
+      {{end}}
+    {{else}}
+      <p class="muted">No comments yet.</p>
+    {{end}}
+  </section>
+</section>
+{{end}}

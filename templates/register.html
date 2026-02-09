@@ -1,0 +1,18 @@
+{{define "content"}}
+<section class="form-card">
+  <h1>Create account</h1>
+  <form method="post" action="/register">
+    <label>Email
+      <input type="email" name="email" required>
+    </label>
+    <label>Username
+      <input type="text" name="username" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" required>
+    </label>
+    <button type="submit" class="primary">Register</button>
+  </form>
+  <p class="muted">Already have an account? <a href="/login">Log in</a>.</p>
+</section>
+{{end}}

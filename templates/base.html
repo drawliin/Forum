@@ -1,0 +1,52 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a href="/">Forum</a>
+      <span class="tagline">Talk, share, and learn</span>
+    </div>
+    <nav class="site-nav">
+      <a href="/">Home</a>
+      {{if .User}}
+        <a href="/post/new">New Post</a>
+        <span class="user-pill">{{.User.Username}}</span>
+        <form class="inline" method="post" action="/logout">
+          <button type="submit" class="ghost">Logout</button>
+        </form>
+      {{else}}
+        <a href="/login">Login</a>
+        <a href="/register" class="primary">Register</a>
+      {{end}}
+    </nav>
+  </header>
+
+  {{if .FormError}}
+    <div class="alert error">
+      <strong>Error:</strong> {{.FormError}}
+      {{if gt .Status 0}}<span class="status">(HTTP {{.Status}})</span>{{end}}
+    </div>
+  {{end}}
+  {{if .Info}}
+    <div class="alert info">
+      {{.Info}}
+    </div>
+  {{end}}
+
+  <main class="page">
+    {{block "content" .}}{{end}}
+  </main>
+
+  <footer class="site-footer">
+    <p>SQLite-backed forum demo. Built with Go.</p>
+  </footer>
+</body>
+</html>
+{{end}}
