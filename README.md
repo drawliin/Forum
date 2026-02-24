@@ -13,32 +13,31 @@ A minimal web forum built with Go, SQLite, and server-side HTML templates.
 ## Local run
 
 1. Install Go 1.22+.
-2. Start the server:
+2. create data folder
+```
+mkdir data
+```
+3. build
+```
+go build -o forum ./cmd/forum/
+```
+3. Start the server:
 
 ```bash
-go run ./cmd/forum
+./forum
 ```
 
 Open `http://localhost:8080`.
 
 ### Environment variables
 - `PORT` (default `8080`)
-- `DB_PATH` (default `./forum.db`)
+- `DB_PATH` (default `./data/forum.db`)
 - `COOKIE_SECURE` (set to `1` to mark cookies as secure)
 
-## Docker
-
-Build and run:
+## Run with Docker
 
 ```bash
-docker build -t forum .
-docker run -p 8080:8080 -e DB_PATH=/app/data/forum.db -v ${PWD}/data:/app/data forum
-```
-
-Or with Compose:
-
-```bash
-docker compose up --build
+docker compose up -d --build
 ```
 
 ## Notes
