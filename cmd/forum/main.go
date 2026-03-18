@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"forum/internal/app"
@@ -10,7 +9,6 @@ import (
 
 func main() {
 	cfg := config.GetConfig()
-	fmt.Println(cfg)
 
 	err := app.New(cfg)
 	if err != nil {

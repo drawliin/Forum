@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"forum/internal/db"
 	"forum/internal/models"
 	"forum/internal/templates"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -39,8 +41,8 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		username := strings.TrimSpace(r.FormValue("username"))
 		password := r.FormValue("password")
 
-		if email == "" || username == "" || password == "" {
-			util.ClientError(w, r, http.StatusBadRequest, "All fields are required")
+		if err = validateInput(username, email, password); err != nil {
+			util.ClientError(w, r, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -96,9 +98,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		info := ""
 		if r.URL.Query().Get("registered") == "1" {
 			info = "Account created. You can log in now."
-			return
 		}
-		templates.Render(w, "login", models.TemplateData{Info: info}, 0)
+		templates.Render(w, "login", models.TemplateData{User: user, Info: info}, 0)
 		return
 	case http.MethodPost:
 		if err := r.ParseForm(); err != nil {
@@ -157,4 +158,23 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	util.ClearSessionCookie(w)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func validateInput(username string, email string, password string) error {
+	if len(username) == 0 || len(email) == 0 || len(password) == 0 {
+		return fmt.Errorf("All fields are required")
+	}
+
+	for _, r := range username + email + password {
+		if unicode.IsSpace(r) {
+			return fmt.Errorf("Fields cannot contain whitespaces")
+		}
+	}
+
+	split := strings.Split(email, "@")
+	if len(split) != 2 || len(split[0]) == 0 || len(split[1]) == 0 {
+		return fmt.Errorf("Invalid email format")
+	}
+
+	return nil
 }
