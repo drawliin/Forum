@@ -119,13 +119,13 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/post/")
 	parts := strings.Split(strings.Trim(path, "/"), "/")
 	if len(parts) == 0 || parts[0] == "" {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 
 	postID, err := strconv.Atoi(parts[0])
 	if err != nil || postID < 1 {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 
@@ -154,7 +154,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		reactToPost(w, r, postID)
 	default:
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 	}
 }
 
@@ -166,16 +166,16 @@ func commentHandler(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/comment/")
 	parts := strings.Split(strings.Trim(path, "/"), "/")
 	if len(parts) < 2 {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 	commentID, err := strconv.Atoi(parts[0])
 	if err != nil || commentID < 1 {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 	if parts[1] != "react" {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 	reactToComment(w, r, commentID)
@@ -190,7 +190,7 @@ func viewPost(w http.ResponseWriter, r *http.Request, postID int) {
 
 	post, err := db.FetchPostByID(postID)
 	if errors.Is(err, sql.ErrNoRows) {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 	if err != nil {
@@ -265,6 +265,7 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		util.ServerError(w, r, "Failed to react to post")
 		return
 	}
+
 	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
 }
 

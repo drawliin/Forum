@@ -11,7 +11,7 @@ import (
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		util.NotFound(w, r)
+		util.ClientError(w, r, http.StatusNotFound, "Page not found")
 		return
 	}
 	if r.Method != http.MethodGet {
@@ -30,7 +30,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		util.ClientError(w, r, http.StatusBadRequest, "Invalid filter")
 		return
 	}
-	if (filter == "mine" || filter == "liked") && user == nil {
+	if filter != "" && user == nil {
 		util.ClientError(w, r, http.StatusUnauthorized, "Please log in to use this filter")
 		return
 	}

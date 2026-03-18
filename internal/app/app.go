@@ -1,7 +1,6 @@
 package app
 
 import (
-	"errors"
 	"forum/internal/config"
 	"forum/internal/db"
 	"forum/internal/handlers"
@@ -32,7 +31,7 @@ func Serve(addr string) error {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+	if err := srv.ListenAndServe(); err != nil {
 		return err
 	}
 	return nil

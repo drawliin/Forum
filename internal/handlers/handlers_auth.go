@@ -15,10 +15,20 @@ import (
 )
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
+	user, err := util.CurrentUser(w, r)
+	if err != nil {
+		util.ServerError(w, r, "Failed to get current user")
+		return
+	}
+
+	if user != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
 	switch r.Method {
 	case http.MethodGet:
-		user, _ := util.CurrentUser(w, r)
-		templates.Render(w, "register", models.TemplateData{User: user}, 0)
+		templates.Render(w, "register", models.TemplateData{}, 0)
 		return
 	case http.MethodPost:
 		if err := r.ParseForm(); err != nil {
@@ -70,14 +80,25 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	user, err := util.CurrentUser(w, r)
+	if err != nil {
+		util.ServerError(w, r, "Failed to get current user")
+		return
+	}
+
+	if user != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
 	switch r.Method {
 	case http.MethodGet:
-		user, _ := util.CurrentUser(w, r)
 		info := ""
 		if r.URL.Query().Get("registered") == "1" {
 			info = "Account created. You can log in now."
+			return
 		}
-		templates.Render(w, "login", models.TemplateData{User: user, Info: info}, 0)
+		templates.Render(w, "login", models.TemplateData{Info: info}, 0)
 		return
 	case http.MethodPost:
 		if err := r.ParseForm(); err != nil {
@@ -127,6 +148,9 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		util.ClientError(w, r, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
+
+	// TODO: check that user is logged in
+
 	cookie, err := r.Cookie("session_id")
 	if err == nil {
 		_, _ = db.Database.Exec("DELETE FROM sessions WHERE id = ?", cookie.Value)
