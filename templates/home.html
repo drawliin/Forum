@@ -3,9 +3,9 @@
   <div class="filters-block">
     <h2>Categories</h2>
     <div class="chip-row">
-      <a class="chip {{if eq .CategoryID 0}}active{{end}}" href="/">All</a>
+      <a class="chip {{if eq .CategoryID 0}}active{{end}}" href="/{{if $.Filter}}?filter={{$.Filter}}{{end}}">All</a>
       {{range .Categories}}
-        <a class="chip {{if eq $.CategoryID .ID}}active{{end}}" href="/?category={{.ID}}">{{.Name}}</a>
+        <a class="chip {{if eq $.CategoryID .ID}}active{{end}}" href="/?category={{.ID}}{{if $.Filter}}&filter={{$.Filter}}{{end}}">{{.Name}}</a>
       {{end}}
     </div>
   </div>
@@ -13,10 +13,10 @@
   <div class="filters-block">
     <h2>Filters</h2>
     <div class="chip-row">
-      <a class="chip {{if eq .Filter ""}}active{{end}}" href="/">All Posts</a>
+      <a class='chip {{if eq .Filter ""}}active{{end}}' href="/{{if .CategoryID}}?category={{.CategoryID}}{{end}}">All Posts</a>
       {{if .User}}
-        <a class="chip {{if eq .Filter "mine"}}active{{end}}" href="/?filter=mine">My Posts</a>
-        <a class="chip {{if eq .Filter "liked"}}active{{end}}" href="/?filter=liked">Liked Posts</a>
+        <a class='chip {{if eq .Filter "mine"}}active{{end}}' href="/?filter=mine{{if .CategoryID}}&category={{.CategoryID}}{{end}}">My Posts</a>
+        <a class='chip {{if eq .Filter "liked"}}active{{end}}' href="/?filter=liked{{if .CategoryID}}&category={{.CategoryID}}{{end}}">Liked Posts</a>
       {{else}}
         <span class="chip disabled">My Posts</span>
         <span class="chip disabled">Liked Posts</span>

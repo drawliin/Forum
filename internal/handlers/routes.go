@@ -10,9 +10,11 @@ func SetupRoutes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/static/", staticHandler)
 	mux.HandleFunc("/", homeHandler)
+
 	mux.HandleFunc("/register", registerHandler)
 	mux.HandleFunc("/login", loginHandler)
 	mux.HandleFunc("/logout", logoutHandler)
+
 	mux.HandleFunc("/post/new", postNewHandler)
 	mux.HandleFunc("/post/", postHandler)
 	mux.HandleFunc("/comment/", commentHandler)
@@ -27,6 +29,7 @@ func RecoverPanic(next http.Handler) http.Handler {
 				util.ServerError(w, r, "Unexpected server error")
 			}
 		}()
+
 		next.ServeHTTP(w, r)
 	})
 }
