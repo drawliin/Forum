@@ -9,6 +9,7 @@ import (
 	"forum/internal/templates"
 	"forum/internal/util"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -42,6 +43,11 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if len(title) > 65 {
+			util.ClientError(w, r, http.StatusBadRequest, "Title too long")
+			return
+		}
+
 		validIDs, err := db.CategoryIDSet()
 		if err != nil {
 			util.ServerError(w, r, "Failed to load categories")
@@ -49,19 +55,18 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		categoryIDs := make([]int, 0, len(categoryValues))
-		seen := make(map[int]struct{})
+		seen := make(map[int]bool)
+
 		for _, value := range categoryValues {
 			id, err := strconv.Atoi(value)
-			if err != nil || id < 1 {
-				continue
-			}
-			if _, ok := validIDs[id]; !ok {
-				continue
+			if err != nil || slices.Contains(validIDs, id) == false {
+				util.ClientError(w, r, http.StatusBadRequest, "Invalid category")
+				return
 			}
 			if _, ok := seen[id]; ok {
-				continue
+				continue // ignore duplicated category
 			}
-			seen[id] = struct{}{}
+			seen[id] = true
 			categoryIDs = append(categoryIDs, id)
 		}
 

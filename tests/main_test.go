@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -44,12 +45,12 @@ func TestMain(t *testing.T) {
 	}
 
 	// bad register
-	var badRegisterCases = []map[string]string{
-		{"email": "badEmail", "username": "a", "password": "a"},
-		{"email": "a@a", "username": "a b", "password": "a b"},
-		{"email": "badEmail@", "username": "a", "password": "a"},
-		{"email": "a@a", "username": "", "password": "a"},
-		{"email": "a@a", "username": "a", "password": ""},
+	var badRegisterCases = []map[string][]string{
+		{"email": {"badEmail"}, "username": {"a"}, "password": {"a"}},
+		{"email": {"a@a"}, "username": {"a b"}, "password": {"a b"}},
+		{"email": {"badEmail@"}, "username": {"a"}, "password": {"a"}},
+		{"email": {"a@a"}, "username": {""}, "password": {"a"}},
+		{"email": {"a@a"}, "username": {"a"}, "password": {""}},
 	}
 	for _, badCase := range badRegisterCases {
 		if err := post(client, testServer.URL+"/register", badCase); err == nil {
@@ -58,26 +59,50 @@ func TestMain(t *testing.T) {
 	}
 
 	// bad login
-	if err := post(client, testServer.URL+"/login", map[string]string{
-		"email":    "aaa",
-		"password": "bbb",
+	if err := post(client, testServer.URL+"/login", map[string][]string{
+		"email":    {"aaa"},
+		"password": {"bbb"},
 	}); err == nil {
 		t.Fatal("")
 	}
 
 	// good register
-	if err := post(client, testServer.URL+"/register", map[string]string{
-		"email":    "a@a",
-		"username": "a",
-		"password": "a",
+	if err := post(client, testServer.URL+"/register", map[string][]string{
+		"email":    {"a@a"},
+		"username": {"a"},
+		"password": {"a"},
 	}); err != nil {
 		t.Fatal(err)
 	}
 
 	// good login
-	if err := post(client, testServer.URL+"/login", map[string]string{
-		"email":    "a@a",
-		"password": "a",
+	if err := post(client, testServer.URL+"/login", map[string][]string{
+		"email":    {"a@a"},
+		"password": {"a"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	// bad post
+	var badPostCases = []map[string][]string{
+		{"title": {"no category"}, "content": {""}, "categories": {}},
+		{"title": {""}, "content": {"no title"}, "categories": {"1"}},
+		{"title": {strings.Repeat("a", 1000)}, "content": {"too long"}, "categories": {"1"}},
+		{"title": {"bad category"}, "content": {"a"}, "categories": {"1", "2", "999999999999999"}},
+		{"title": {"bad category"}, "content": {"a"}, "categories": {"1", "2", "-5"}},
+		{"title": {"bad category"}, "content": {"a"}, "categories": {"1", "2", "abc"}},
+	}
+	for _, badCase := range badPostCases {
+		if err := post(client, testServer.URL+"/post/new", badCase); err == nil {
+			t.Fatal("")
+		}
+	}
+
+	// good post
+	if err := post(client, testServer.URL+"/post/new", map[string][]string{
+		"title":      {"hello"},
+		"content":    {"hello"},
+		"categories": {"1", "2", "3", "4"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -99,10 +124,12 @@ func get(client *http.Client, url string) error {
 	return nil
 }
 
-func post(client *http.Client, url_ string, data map[string]string) error {
+func post(client *http.Client, url_ string, data map[string][]string) error {
 	form := url.Values{}
-	for key, val := range data {
-		form.Set(key, val)
+	for k, values := range data {
+		for _, v := range values {
+			form.Add(k, v)
+		}
 	}
 
 	resp, err := client.PostForm(url_, form)

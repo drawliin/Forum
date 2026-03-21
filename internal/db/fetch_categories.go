@@ -47,20 +47,20 @@ func FetchPostCategories(postID int) ([]models.Category, error) {
 	return categories, rows.Err()
 }
 
-func CategoryIDSet() (map[int]struct{}, error) {
+func CategoryIDSet() ([]int, error) {
 	rows, err := Database.Query("SELECT id FROM categories")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	ids := make(map[int]struct{})
+	ids := []int{}
 	for rows.Next() {
 		var id int
 		if err := rows.Scan(&id); err != nil {
 			return nil, err
 		}
-		ids[id] = struct{}{}
+		ids = append(ids, id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
