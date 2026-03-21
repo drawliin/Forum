@@ -6,6 +6,7 @@ import (
 	"forum/internal/templates"
 	"forum/internal/util"
 	"net/http"
+	"slices"
 	"strconv"
 )
 
@@ -35,10 +36,16 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validIDs, err := db.CategoryIDSet()
+	if err != nil {
+		util.ServerError(w, r, "Failed to load categories")
+		return
+	}
+
 	categoryID := 0
 	if value := r.URL.Query().Get("category"); value != "" {
 		parsed, err := strconv.Atoi(value)
-		if err != nil || parsed < 1 {
+		if err != nil || slices.Contains(validIDs, parsed) == false {
 			util.ClientError(w, r, http.StatusBadRequest, "Invalid category")
 			return
 		}

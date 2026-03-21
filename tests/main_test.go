@@ -83,6 +83,29 @@ func TestMain(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// bad filter/category
+	var badCatCases = []string{
+		"filter=abcd",
+		"category=12",
+		"filter=aaaaaaa&category=0",
+	}
+	for _, badCase := range badCatCases {
+		if err := get(client, testServer.URL+"/?"+badCase); err == nil {
+			t.Fatal("")
+		}
+	}
+
+	// good filter/category
+	var goodCatCases = []string{
+		"filter=mine&category=2",
+		"filter=liked&category=3",
+	}
+	for _, badCase := range goodCatCases {
+		if err := get(client, testServer.URL+"/?"+badCase); err != nil {
+			t.Fatal(err)
+		}
+	}
+
 	// bad post
 	var badPostCases = []map[string][]string{
 		{"title": {"no category"}, "content": {""}, "categories": {}},
@@ -106,8 +129,6 @@ func TestMain(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
-
-	// TODO: categories, filters, posts, reactions
 }
 
 func get(client *http.Client, url string) error {
