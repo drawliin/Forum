@@ -937,6 +937,10 @@ label.checkbox input[type=checkbox] {
   letter-spacing: 0.3px;
 }
 
+.site-footer span {
+  color: var(--text);
+}
+
 ::-webkit-scrollbar { width: 7px; }
 ::-webkit-scrollbar-track { background: var(--primary); }
 ::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 99px; }
