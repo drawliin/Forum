@@ -1,22 +1,23 @@
 package main
 
 import (
-    "log"
+	"log"
 
-    "forum/internal/app"
+	"forum/internal/app"
+	"forum/internal/config"
 )
 
 func main() {
-    cfg := app.LoadConfig()
+	cfg := config.GetConfig()
 
-    application, err := app.New(cfg)
-    if err != nil {
-        log.Fatalf("init app: %v", err)
-    }
+	err := app.New(cfg)
+	if err != nil {
+		log.Fatalf("failed to init app: %v", err)
+	}
 
-    addr := cfg.Addr()
-    log.Printf("forum listening on %s", addr)
-    if err := application.Serve(addr); err != nil {
-        log.Fatalf("server: %v", err)
-    }
+	addr := ":" + cfg.Port
+	log.Printf("forum listening on http://localhost%s", addr)
+	if err := app.Serve(addr); err != nil {
+		log.Fatalf("server error: %v", err)
+	}
 }

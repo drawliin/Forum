@@ -10,6 +10,21 @@ A minimal web forum built with Go, SQLite, and server-side HTML templates.
 - Like/dislike posts and comments (toggle on/off).
 - Filter posts by category, your posts, or your liked posts.
 
+## Structure
+- `cmd/forum`: main func
+- `data`: database
+- `internal`
+    - `app`: entry point, server setup
+    - `config`: project config variables
+    - `handlers`: http handlers
+    - `db`: database setup and fetch
+    - `models`: db tables to golang structs
+    - `templates`: html handling
+    - `util`: helper functions
+- `static`: static files
+- `templates`: html templates
+- `tests`: unit tests
+
 ## Local run
 
 1. Install Go 1.22+.

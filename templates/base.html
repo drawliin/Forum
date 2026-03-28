@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/static/icon.png">
   <title>Forum</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
@@ -28,12 +29,6 @@
     </nav>
   </header>
 
-  {{if .FormError}}
-    <div class="alert error">
-      <strong>Error:</strong> {{.FormError}}
-      {{if gt .Status 0}}<span class="status">(HTTP {{.Status}})</span>{{end}}
-    </div>
-  {{end}}
   {{if .Info}}
     <div class="alert info">
       {{.Info}}
@@ -45,7 +40,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>SQLite-backed forum demo. Built with Go.</p>
+    <p>Golang Forum. Made by <span>hhamouich mbelhouss khanani maadlani.</span></p>
   </footer>
 </body>
 </html>
