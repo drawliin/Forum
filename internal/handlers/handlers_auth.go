@@ -4,14 +4,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"forum/internal/db"
-	"forum/internal/models"
-	"forum/internal/templates"
-	"forum/internal/util"
 	"net/http"
 	"strings"
 	"time"
 	"unicode"
+
+	"forum/internal/db"
+	"forum/internal/models"
+	"forum/internal/templates"
+	"forum/internal/util"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -162,18 +163,18 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 func validateInput(username string, email string, password string) error {
 	if len(username) == 0 || len(email) == 0 || len(password) == 0 {
-		return fmt.Errorf("All fields are required")
+		return fmt.Errorf("all fields are required")
 	}
 
-	for _, r := range username + email + password {
+	for _, r := range username + email {
 		if unicode.IsSpace(r) {
-			return fmt.Errorf("Fields cannot contain whitespaces")
+			return fmt.Errorf("fields cannot contain whitespaces")
 		}
 	}
 
 	split := strings.Split(email, "@")
 	if len(split) != 2 || len(split[0]) == 0 || len(split[1]) == 0 {
-		return fmt.Errorf("Invalid email format")
+		return fmt.Errorf("invalid email format")
 	}
 
 	return nil
