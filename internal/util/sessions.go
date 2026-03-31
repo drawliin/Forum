@@ -87,9 +87,8 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) error {
 		Expires:  time.Unix(expires, 0),
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-	}
-	if config.GetConfig().CookieSecure {
-		cookie.Secure = true
+
+		Secure: config.GetConfig().CookieSecure,
 	}
 	http.SetCookie(w, cookie)
 	return nil

@@ -8,6 +8,9 @@
     <label>Password
       <input type="password" name="password" required>
     </label>
+    {{if .FormError}}
+      <p class="form-error">{{.FormError}}</p>
+    {{end}}
     <button type="submit" class="primary">Login</button>
   </form>
   <p class="muted">New here? <a href="/register">Create an account</a>.</p>

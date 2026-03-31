@@ -100,8 +100,8 @@ func TestMain(t *testing.T) {
 		"filter=mine&category=2",
 		"filter=liked&category=3",
 	}
-	for _, badCase := range goodCatCases {
-		if err := get(client, testServer.URL+"/?"+badCase); err != nil {
+	for _, goodCase := range goodCatCases {
+		if err := get(client, testServer.URL+"/?"+goodCase); err != nil {
 			t.Fatal(err)
 		}
 	}
