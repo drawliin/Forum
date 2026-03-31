@@ -162,6 +162,10 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateInput(username string, email string, password string) error {
+	if len(username) > 30 || len(email) > 30 {
+		return fmt.Errorf("name or email too long")
+	}
+
 	if len(username) == 0 || len(email) == 0 || len(password) == 0 {
 		return fmt.Errorf("all fields are required")
 	}
