@@ -2,7 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"forum/internal/config"
 	"os"
+	"path/filepath"
 )
 
 var defaultCategories = []string{
@@ -16,6 +18,13 @@ var Database *sql.DB
 
 func InitDB(dbPath string) error {
 	var err error
+	dbPath = config.ResolvePath(dbPath)
+	if dbPath != ":memory:" {
+		if err := os.MkdirAll(filepath.Dir(dbPath), 0o755); err != nil {
+			return err
+		}
+	}
+
 	Database, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return err
@@ -29,7 +38,7 @@ func InitDB(dbPath string) error {
 		return err
 	}
 
-	schema, err := os.ReadFile("schema.sql")
+	schema, err := os.ReadFile(config.ResolvePath("schema.sql"))
 	if err != nil {
 		return err
 	}

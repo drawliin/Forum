@@ -2,6 +2,7 @@ package templates
 
 import (
 	"bytes"
+	"forum/internal/config"
 	"forum/internal/models"
 	"html/template"
 	"log"
@@ -33,8 +34,8 @@ func InitTemplates() error {
 
 	templates = make(map[string]*template.Template, len(pages))
 	for _, page := range pages {
-		basePath := filepath.Join("templates", "base.html")
-		pagePath := filepath.Join("templates", page+".html")
+		basePath := config.ResolvePath(filepath.Join("templates", "base.html"))
+		pagePath := config.ResolvePath(filepath.Join("templates", page+".html"))
 
 		tmpl, err := template.New("base").Funcs(funcs).ParseFiles(basePath, pagePath)
 		if err != nil {

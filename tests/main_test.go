@@ -10,17 +10,14 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 	"testing"
 )
 
 func TestMain(t *testing.T) {
-	os.Chdir("../") // workaround for db path
-
 	cfg := &config.Config{
 		Port:         "",
-		DBPath:       ":memory:",
+		DBPath:       ":memory:", // create db in RAM instead of disk
 		CookieSecure: false,
 	}
 	err := app.New(cfg)
