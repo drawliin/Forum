@@ -111,6 +111,7 @@ h3 {
 p {
    max-width: 70ch;
    color: var(--neutral-300);
+   overflow-wrap: break-word;
 }
 
 img {
