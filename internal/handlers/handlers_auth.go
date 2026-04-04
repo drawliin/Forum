@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/mail"
 	"strings"
 	"time"
 	"unicode"
@@ -151,7 +152,12 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: check that user is logged in
+	_, err := util.CurrentUser(w, r)
+	if err != nil {
+		// not logged in
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 
 	cookie, err := r.Cookie("session_id")
 	if err == nil {
@@ -176,8 +182,7 @@ func validateInput(username string, email string, password string) error {
 		}
 	}
 
-	split := strings.Split(email, "@")
-	if len(split) != 2 || len(split[0]) == 0 || len(split[1]) == 0 {
+	if _, err := mail.ParseAddress(email); err != nil {
 		return fmt.Errorf("invalid email format")
 	}
 
