@@ -13,7 +13,7 @@ type Config struct {
 
 var config *Config = &Config{
 	Port:         getenv("PORT", "8080"),
-	DBPath:       getenv("DB_PATH", "./data/forum.db"),
+	DBPath:       ResolvePath(getenv("DB_PATH", "./data/forum.db")),
 	CookieSecure: getenv("COOKIE_SECURE", "") == "1",
 }
 

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"forum/internal/config"
 	"forum/internal/util"
 	"net/http"
 	"os"
@@ -12,7 +13,7 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := r.URL.Path[1:]
+	path := config.ResolvePath(r.URL.Path[1:])
 	info, err := os.Stat(path)
 	if err != nil {
 		util.ClientError(w, r, http.StatusNotFound, "Not found")
