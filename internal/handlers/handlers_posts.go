@@ -222,7 +222,7 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		return
 	}
 
-	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func togglePostReaction(userID, postID, value int) error {

@@ -28,7 +28,7 @@
 <section class="posts">
   {{if .Posts}}
     {{range .Posts}}
-      <article class="post-card">
+      <article class="post-card"  onclick="window.location.href='/post/{{.ID}}'">
         <header>
           <h3><a href="/post/{{.ID}}">{{.Title}}</a></h3>
           <div class="meta">
