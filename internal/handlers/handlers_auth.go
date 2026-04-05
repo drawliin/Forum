@@ -4,14 +4,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"forum/internal/db"
-	"forum/internal/models"
-	"forum/internal/templates"
-	"forum/internal/util"
 	"net/http"
 	"strings"
 	"time"
 	"unicode"
+
+	"forum/internal/db"
+	"forum/internal/models"
+	"forum/internal/templates"
+	"forum/internal/util"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -41,15 +42,23 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		username := strings.TrimSpace(r.FormValue("username"))
 		password := r.FormValue("password")
 
+		// Trying to fix
 		if err = validateInput(username, email, password); err != nil {
-			util.ClientError(w, r, http.StatusBadRequest, err.Error())
+			// Problem with email/username/password
+			templates.Render(w, "register", models.TemplateData{
+				FormError: err.Error(),
+			}, http.StatusBadRequest)
+
 			return
 		}
 
 		var existing int
 		err := db.Database.QueryRow("SELECT id FROM users WHERE email = ? OR username = ?", email, username).Scan(&existing)
 		if err == nil {
-			util.ClientError(w, r, http.StatusBadRequest, "Email or username already taken")
+			//Email or username already taken
+			templates.Render(w, "register", models.TemplateData{
+				FormError: "Email or username already taken",
+			}, http.StatusBadRequest)
 			return
 		}
 		if !errors.Is(err, sql.ErrNoRows) {
@@ -110,7 +119,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 
 		if email == "" || password == "" {
-			util.ClientError(w, r, http.StatusBadRequest, "Email and password are required")
+			// No Email or Password 
+			templates.Render(w, "login", models.TemplateData{
+				FormError: "Email and password are required",
+			}, http.StatusBadRequest)
 			return
 		}
 
@@ -121,7 +133,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			email,
 		).Scan(&user.ID, &user.Username, &user.Email, &hash)
 		if errors.Is(err, sql.ErrNoRows) {
-			util.ClientError(w, r, http.StatusUnauthorized, "Invalid credentials")
+
+			// Invalid credentials: email doesn't exist
+			templates.Render(w, "login", models.TemplateData{
+				FormError: "Invalid credentials",
+			}, http.StatusBadRequest)
 			return
 		}
 		if err != nil {
@@ -130,7 +146,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
-			util.ClientError(w, r, http.StatusUnauthorized, "Invalid credentials")
+			// Invalid credentials: wrong password
+			templates.Render(w, "login", models.TemplateData{
+				FormError: "Invalid credentials",
+			}, http.StatusBadRequest)
 			return
 		}
 
