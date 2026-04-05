@@ -25,7 +25,7 @@ func New(cfg *config.Config) error {
 func Serve(addr string) error {
 	srv := &http.Server{
 		Addr:         addr,
-		Handler:      handlers.RecoverPanic(handlers.SetupRoutes()),
+		Handler:      handlers.SetupRoutes(),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,

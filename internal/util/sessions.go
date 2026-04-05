@@ -3,11 +3,12 @@ package util
 import (
 	"database/sql"
 	"errors"
+	"net/http"
+	"time"
+
 	"forum/internal/config"
 	"forum/internal/db"
 	"forum/internal/models"
-	"net/http"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -37,7 +38,11 @@ func CurrentUser(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 	}
 
 	if time.Now().Unix() > expires {
-		_, _ = db.Database.Exec("DELETE FROM sessions WHERE id = ?", cookie.Value)
+		_, err = db.Database.Exec("DELETE FROM sessions WHERE id = ?", cookie.Value)
+		if err != nil {
+			return nil, err
+		}
+
 		ClearSessionCookie(w)
 		return nil, nil
 	}
@@ -82,9 +87,8 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) error {
 		Expires:  time.Unix(expires, 0),
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-	}
-	if config.GetConfig().CookieSecure {
-		cookie.Secure = true
+
+		Secure: config.GetConfig().CookieSecure,
 	}
 	http.SetCookie(w, cookie)
 	return nil
