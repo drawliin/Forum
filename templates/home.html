@@ -36,7 +36,9 @@
             <span>{{formatUnix .CreatedAt}}</span>
           </div>
         </header>
-        <p class="excerpt">{{.Content}}</p>
+          <a href="/post/{{.ID}}">
+            <p class="excerpt">{{.Content}}</p>
+          </a>
         <div class="categories">
           {{range .Categories}}
             <span class="tag">{{.Name}}</span>
