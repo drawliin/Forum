@@ -1,8 +1,18 @@
 package handlers
 
 import (
+	"forum/internal/util"
 	"net/http"
+	"sync"
+	"time"
 )
+
+const maxTokens = 100
+
+var tokens = maxTokens
+var refillTime = time.Second
+var lastRefill = time.Now()
+var mutex sync.Mutex
 
 func SetupRoutes() http.Handler {
 	mux := http.NewServeMux()
@@ -16,5 +26,26 @@ func SetupRoutes() http.Handler {
 	mux.HandleFunc("/post/new", postNewHandler)
 	mux.HandleFunc("/post/", postHandler)
 	mux.HandleFunc("/comment/", commentHandler)
-	return mux
+	return rateLimiterMiddleware(mux)
+}
+
+func rateLimiterMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mutex.Lock()
+		defer mutex.Unlock()
+
+		elapsed := time.Since(lastRefill)
+		if elapsed > refillTime {
+			// refill tokens
+			tokens += min(int(elapsed/refillTime), maxTokens)
+			lastRefill = time.Now()
+		}
+
+		if tokens == 0 {
+			util.ClientError(w, r, http.StatusTooManyRequests, "Too many requests")
+		} else {
+			tokens -= 1
+			next.ServeHTTP(w, r)
+		}
+	})
 }
