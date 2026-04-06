@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"net/http"
+	"slices"
+	"strconv"
+
 	"forum/internal/db"
 	"forum/internal/models"
 	"forum/internal/templates"
 	"forum/internal/util"
-	"net/http"
-	"slices"
-	"strconv"
 )
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +46,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	categoryID := 0
 	if value := r.URL.Query().Get("category"); value != "" {
 		parsed, err := strconv.Atoi(value)
-		if err != nil || slices.Contains(validIDs, parsed) == false {
+		if err != nil || !slices.Contains(validIDs, parsed) {
 			util.ClientError(w, r, http.StatusBadRequest, "Invalid category")
 			return
 		}

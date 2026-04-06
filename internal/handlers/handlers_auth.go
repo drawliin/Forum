@@ -55,7 +55,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		var existing int
 		err := db.Database.QueryRow("SELECT id FROM users WHERE email = ? OR username = ?", email, username).Scan(&existing)
 		if err == nil {
-			//Email or username already taken
+			// Email or username already taken
 			templates.Render(w, "register", models.TemplateData{
 				FormError: "Email or username already taken",
 			}, http.StatusBadRequest)
@@ -119,7 +119,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 
 		if email == "" || password == "" {
-			// No Email or Password 
+			// No Email or Password
 			templates.Render(w, "login", models.TemplateData{
 				FormError: "Email and password are required",
 			}, http.StatusBadRequest)
