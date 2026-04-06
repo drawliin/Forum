@@ -19,15 +19,15 @@
       {{if .User}}
         <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
           <input type="hidden" name="value" value="1">
-          <button type="submit" class="ghost">Like {{if gt .Post.Likes 0}}{{.Post.Likes}}{{end}}</button>
+          <button type="submit" class="ghost">Like <span class="reaction-count">{{.Post.Likes}}</span></button>
         </form>
         <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
           <input type="hidden" name="value" value="-1">
-          <button type="submit" class="ghost">Dislike {{if gt .Post.Dislikes 0}}{{.Post.Dislikes}}{{end}}</button>
+          <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
         </form>
       {{else}}
-        <span class="count">Likes {{if gt .Post.Likes 0}}{{.Post.Likes}}{{end}}</span>
-        <span class="count">Dislikes {{if gt .Post.Dislikes 0}}{{.Post.Dislikes}}{{end}}</span>
+        <span class="count">Likes {{.Post.Likes}}</span>
+        <span class="count">Dislikes {{.Post.Dislikes}}</span>
         <span class="hint">Login to react</span>
       {{end}}
     </div>
@@ -57,11 +57,11 @@
             {{if $.User}}
               <form class="inline" method="post" action="/comment/{{.ID}}/react">
                 <input type="hidden" name="value" value="1">
-                <button type="submit" class="ghost">Like {{if gt .Likes 0}}{{.Likes}}{{end}}</button>
+                <button type="submit" class="ghost">Like {{if gt .Likes 0}}<span class="reaction-count">{{.Likes}}</span>{{end}}</button>
               </form>
               <form class="inline" method="post" action="/comment/{{.ID}}/react">
                 <input type="hidden" name="value" value="-1">
-                <button type="submit" class="ghost">Dislike {{if gt .Dislikes 0}}{{.Dislikes}}{{end}}</button>
+                <button type="submit" class="ghost">Dislike {{if gt .Dislikes 0}}<span class="reaction-count">{{.Dislikes}}</span>{{end}}</button>
               </form>
             {{else}}
               <span class="count">Likes {{if gt .Likes 0}}{{.Likes}}{{end}}</span>
