@@ -225,14 +225,13 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 	}
 
 	referer := r.Referer()
-
 	u, err := url.Parse(referer)
+
 	if err != nil {
 		util.ClientError(w, r, http.StatusBadRequest, "invalid url ")
 	}
 
 	path := u.Path
-	fmt.Println("reff", path)
 	if strings.HasPrefix(referer, "http://localhost:8080/post/") {
 		http.Redirect(w, r, path, http.StatusSeeOther)
 	} else {
