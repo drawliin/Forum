@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -226,7 +225,6 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 
 	referer := r.Referer()
 	u, err := url.Parse(referer)
-
 	if err != nil {
 		util.ClientError(w, r, http.StatusBadRequest, "invalid url ")
 	}
