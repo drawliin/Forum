@@ -5,7 +5,7 @@ import (
 )
 
 func FetchCategories() ([]models.Category, error) {
-	rows, err := Database.Query("SELECT id, name FROM categories ORDER BY name")
+	rows, err := Database.Query("SELECT id, name FROM categories")
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +27,7 @@ func FetchPostCategories(postID int) ([]models.Category, error) {
 		`SELECT c.id, c.name
         FROM categories c
         JOIN post_categories pc ON pc.category_id = c.id
-        WHERE pc.post_id = ?
-        ORDER BY c.name`,
+        WHERE pc.post_id = ?`,
 		postID,
 	)
 	if err != nil {

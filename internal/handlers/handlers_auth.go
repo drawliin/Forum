@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/mail"
 	"strings"
 	"time"
 	"unicode"
@@ -169,7 +170,12 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: check that user is logged in
+	_, err := util.CurrentUser(w, r)
+	if err != nil {
+		// not logged in
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 
 	cookie, err := r.Cookie("session_id")
 	if err == nil {
@@ -180,19 +186,22 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateInput(username string, email string, password string) error {
-	if len(username) == 0 || len(email) == 0 || len(password) == 0 {
-		return fmt.Errorf("All fields are required")
+	if len(username) > 30 || len(email) > 30 {
+		return fmt.Errorf("name or email too long")
 	}
 
-	for _, r := range username + email + password {
+	if len(username) == 0 || len(email) == 0 || len(password) == 0 {
+		return fmt.Errorf("all fields are required")
+	}
+
+	for _, r := range username + email {
 		if unicode.IsSpace(r) {
-			return fmt.Errorf("Fields cannot contain whitespaces")
+			return fmt.Errorf("fields cannot contain whitespaces")
 		}
 	}
 
-	split := strings.Split(email, "@")
-	if len(split) != 2 || len(split[0]) == 0 || len(split[1]) == 0 {
-		return fmt.Errorf("Invalid email format")
+	if _, err := mail.ParseAddress(email); err != nil {
+		return fmt.Errorf("invalid email format")
 	}
 
 	return nil
