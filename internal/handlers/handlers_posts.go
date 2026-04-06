@@ -230,7 +230,7 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 	}
 
 	path := u.Path
-	if strings.HasPrefix(referer, "http://localhost:8080/post/") {
+	if strings.HasPrefix(path, "/post/") {
 		http.Redirect(w, r, path, http.StatusSeeOther)
 	} else {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
