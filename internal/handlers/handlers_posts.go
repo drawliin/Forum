@@ -232,43 +232,6 @@ func viewPost(w http.ResponseWriter, r *http.Request, postID int) {
 	templates.Render(w, "post_view", data, 0)
 }
 
-func addComment(w http.ResponseWriter, r *http.Request, postID int) {
-	user, ok := util.RequireAuth(w, r)
-	if !ok {
-		return
-	}
-	if err := r.ParseForm(); err != nil {
-		util.ClientError(w, r, http.StatusBadRequest, "Invalid form")
-		return
-	}
-	content := strings.TrimSpace(r.FormValue("content"))
-	if content == "" {
-		post, err := db.FetchPostByID(postID)
-		if err != nil {
-			util.ServerError(w, r, "Failed to load post")
-			return
-		}
-		// Empty comment error on same page
-		templates.Render(w, "post_view", models.TemplateData{
-			FormError: "Comment cannot be empty",
-			User:      user,
-			Post:      post,
-		}, http.StatusBadRequest)
-		return
-	}
-	if _, err := db.Database.Exec(
-		"INSERT INTO comments (post_id, user_id, content, created_at) VALUES (?, ?, ?, ?)",
-		postID,
-		user.ID,
-		content,
-		time.Now().Unix(),
-	); err != nil {
-		util.ServerError(w, r, "Failed to add comment")
-		return
-	}
-	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
-}
-
 func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 	user, ok := util.RequireAuth(w, r)
 	if !ok {
