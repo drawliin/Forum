@@ -80,7 +80,7 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 
 		for _, value := range categoryValues {
 			id, err := strconv.Atoi(value)
-			if err != nil || slices.Contains(validIDs, id) == false {
+			if err != nil || !slices.Contains(validIDs, id) {
 				util.ClientError(w, r, http.StatusBadRequest, "Invalid category")
 				return
 			}
