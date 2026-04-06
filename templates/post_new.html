@@ -13,7 +13,7 @@
       <div class="checkbox-grid">
         {{range $i, $c := .Categories}}
           <label class="checkbox">
-            <input type="checkbox" name="categories" value {{if eq $i 0}}checked required {{end}} ="{{$c.ID}}">
+            <input type="checkbox" name="categories"  {{if eq $i 0}}checked {{end}} value="{{$c.ID}}">
             <span>{{$c.Name}}</span>
           </label>
         {{end}}
