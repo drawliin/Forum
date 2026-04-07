@@ -16,12 +16,7 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := config.ResolvePath(r.URL.Path[1:])
 	info, err := os.Stat(path)
-	if err != nil {
-		util.ClientError(w, r, http.StatusNotFound, "Not found")
-		return
-	}
-
-	if info.IsDir() {
+	if err != nil || info.IsDir() {
 		util.ClientError(w, r, http.StatusNotFound, "Not found")
 		return
 	}
