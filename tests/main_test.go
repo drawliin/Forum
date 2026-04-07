@@ -3,15 +3,16 @@ package tests
 import (
 	"errors"
 	"fmt"
-	"forum/internal/app"
-	"forum/internal/config"
-	"forum/internal/handlers"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
+
+	"forum/internal/app"
+	"forum/internal/config"
+	"forum/internal/handlers"
 )
 
 func TestMain(t *testing.T) {
@@ -42,7 +43,7 @@ func TestMain(t *testing.T) {
 	}
 
 	// bad register
-	var badRegisterCases = []map[string][]string{
+	badRegisterCases := []map[string][]string{
 		{"email": {"badEmail"}, "username": {"a"}, "password": {"a"}},
 		{"email": {"a@a"}, "username": {"a b"}, "password": {"a b"}},
 		{"email": {"badEmail@"}, "username": {"a"}, "password": {"a"}},
@@ -67,7 +68,7 @@ func TestMain(t *testing.T) {
 	if err := post(client, testServer.URL+"/register", map[string][]string{
 		"email":    {"a@a"},
 		"username": {"a"},
-		"password": {"a"},
+		"password": {"aaaaaa"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -75,13 +76,13 @@ func TestMain(t *testing.T) {
 	// good login
 	if err := post(client, testServer.URL+"/login", map[string][]string{
 		"email":    {"a@a"},
-		"password": {"a"},
+		"password": {"aaaaaa"},
 	}); err != nil {
 		t.Fatal(err)
 	}
 
 	// bad filter/category
-	var badCatCases = []string{
+	badCatCases := []string{
 		"filter=abcd",
 		"category=12",
 		"filter=aaaaaaa&category=0",
@@ -93,7 +94,7 @@ func TestMain(t *testing.T) {
 	}
 
 	// good filter/category
-	var goodCatCases = []string{
+	goodCatCases := []string{
 		"filter=mine&category=2",
 		"filter=liked&category=3",
 	}
@@ -104,7 +105,7 @@ func TestMain(t *testing.T) {
 	}
 
 	// bad post
-	var badPostCases = []map[string][]string{
+	badPostCases := []map[string][]string{
 		{"title": {"no category"}, "content": {""}, "categories": {}},
 		{"title": {""}, "content": {"no title"}, "categories": {"1"}},
 		{"title": {strings.Repeat("a", 1000)}, "content": {"too long"}, "categories": {"1"}},
