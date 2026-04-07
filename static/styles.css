@@ -474,12 +474,6 @@ form.inline {
   padding-left: 1.5rem;
 }
 
-.post-card.detail:hover {
-  box-shadow:none;
-  border-color:rgba(168, 85, 247, 0.25);
-  cursor: auto;
-}
-
 
 .post-card header {
   display: flex;
@@ -709,6 +703,7 @@ input:focus, textarea:focus, select:focus {
 textarea { 
   resize: vertical; 
   min-height: 110px; 
+  max-height: max-content;
 }
 
 button[type=submit] {
