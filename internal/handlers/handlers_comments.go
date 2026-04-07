@@ -37,7 +37,11 @@ func addComment(w http.ResponseWriter, r *http.Request, postID int) {
 			Post:      post,
 		}, http.StatusBadRequest)
 		return
+	} else if len(content) > 1028 {
+		util.ClientError(w, r, http.StatusBadRequest, "Comment too long")
+		return
 	}
+
 	if _, err := db.Database.Exec(
 		"INSERT INTO comments (post_id, user_id, content, created_at) VALUES (?, ?, ?, ?)",
 		postID,

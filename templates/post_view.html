@@ -37,7 +37,7 @@
     <h2>Comments</h2>
     {{if .User}}
       <form method="post" action="/post/{{.Post.ID}}/comment" class="comment-form">
-        <textarea name="content" rows="4" placeholder="Write a comment..." required></textarea>
+        <textarea name="content" rows="4" placeholder="Write a comment..." maxlength="1028" required></textarea>
         <button type="submit" class="primary">Add comment</button>
       </form>
     {{else}}
