@@ -454,7 +454,6 @@ form.inline {
 .post-card:hover {
   box-shadow: 0 12px 32px rgba(168, 85, 247, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.08);
   border-color: rgba(6, 182, 212, 0.5);
-  transform: translateY(-6px);
 }
 
 .post-card.detail {
@@ -462,6 +461,7 @@ form.inline {
   margin-bottom: 2rem;
   padding-left: 1.5rem;
 }
+
 
 .post-card header {
   display: flex;
@@ -507,6 +507,7 @@ form.inline {
   overflow: hidden;
   line-height: 1.6;
   font-weight: 400;
+  max-height: 40vh;
 }
 
 .categories, .tags {

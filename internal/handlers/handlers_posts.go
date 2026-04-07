@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"net/url"
 	"slices"
 	"strconv"
 	"strings"
@@ -40,12 +41,32 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 		categoryValues := r.Form["categories"]
 
 		if title == "" || content == "" {
-			util.ClientError(w, r, http.StatusBadRequest, "Title and content are required")
+			categories, err := db.FetchCategories()
+			if err != nil {
+				util.ServerError(w, r, "Failed to load categories")
+				return
+			}
+			// Empty Title/content error
+			templates.Render(w, "post_new", models.TemplateData{
+				FormError:  "Title and content are required",
+				User:       user,
+				Categories: categories,
+			}, http.StatusBadRequest)
 			return
 		}
 
 		if len(title) > 65 {
-			util.ClientError(w, r, http.StatusBadRequest, "Title too long")
+			categories, err := db.FetchCategories()
+			if err != nil {
+				util.ServerError(w, r, "Failed to load categories")
+				return
+			}
+			// Long title error
+			templates.Render(w, "post_new", models.TemplateData{
+				FormError:  "Title too long",
+				User:       user,
+				Categories: categories,
+			}, http.StatusBadRequest)
 			return
 		}
 
@@ -60,7 +81,7 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 
 		for _, value := range categoryValues {
 			id, err := strconv.Atoi(value)
-			if err != nil || slices.Contains(validIDs, id) {
+			if err != nil || !slices.Contains(validIDs, id) {
 				util.ClientError(w, r, http.StatusBadRequest, "Invalid category")
 				return
 			}
@@ -72,7 +93,17 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if len(categoryIDs) == 0 {
-			util.ClientError(w, r, http.StatusBadRequest, "Select at least one valid category")
+			categories, err := db.FetchCategories()
+			if err != nil {
+				util.ServerError(w, r, "Failed to load categories")
+				return
+			}
+			// No category selected error
+			templates.Render(w, "post_new", models.TemplateData{
+				FormError:  "Select at least one valid category",
+				User:       user,
+				Categories: categories,
+			}, http.StatusBadRequest)
 			return
 		}
 
@@ -222,7 +253,18 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		return
 	}
 
-	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
+	referer := r.Referer()
+	u, err := url.Parse(referer)
+	if err != nil {
+		util.ClientError(w, r, http.StatusBadRequest, "invalid url ")
+	}
+
+	path := u.Path
+	if strings.HasPrefix(path, "/post/") {
+		http.Redirect(w, r, path, http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
 
 func togglePostReaction(userID, postID, value int) error {

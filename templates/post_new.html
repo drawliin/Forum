@@ -11,15 +11,18 @@
     <fieldset>
       <legend>Categories</legend>
       <div class="checkbox-grid">
-        {{range .Categories}}
+        {{range $i, $c := .Categories}}
           <label class="checkbox">
-            <input type="checkbox" name="categories" value="{{.ID}}">
-            <span>{{.Name}}</span>
+            <input type="checkbox" name="categories"  {{if eq $i 0}}checked {{end}} value="{{$c.ID}}">
+            <span>{{$c.Name}}</span>
           </label>
         {{end}}
       </div>
     </fieldset>
     <button type="submit" class="primary">Publish</button>
+    {{if .FormError}}
+      <p class="form-error">{{.FormError}}</p>
+    {{end}}
   </form>
 </section>
 {{end}}

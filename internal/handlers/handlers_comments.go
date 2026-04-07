@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"forum/internal/db"
+	"forum/internal/models"
+	"forum/internal/templates"
 	"forum/internal/util"
 )
 
@@ -23,7 +25,17 @@ func addComment(w http.ResponseWriter, r *http.Request, postID int) {
 	}
 	content := strings.TrimSpace(r.FormValue("content"))
 	if content == "" {
-		util.ClientError(w, r, http.StatusBadRequest, "Comment cannot be empty")
+		post, err := db.FetchPostByID(postID)
+		if err != nil {
+			util.ServerError(w, r, "Failed to load post")
+			return
+		}
+		// Empty comment error on same page
+		templates.Render(w, "post_view", models.TemplateData{
+			FormError: "Comment cannot be empty",
+			User:      user,
+			Post:      post,
+		}, http.StatusBadRequest)
 		return
 	}
 	if _, err := db.Database.Exec(
