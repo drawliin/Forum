@@ -28,7 +28,7 @@
 <section class="posts">
   {{if .Posts}}
     {{range .Posts}}
-      <article class="post-card">
+      <article class="post-card"  onclick="window.location.href='/post/{{.ID}}'">
         <header>
           <h3><a href="/post/{{.ID}}">{{.Title}}</a></h3>
           <div class="meta">
@@ -48,15 +48,15 @@
           {{if $.User}}
             <form class="inline" method="post" action="/post/{{.ID}}/react">
               <input type="hidden" name="value" value="1">
-              <button type="submit" class="ghost">Like {{if gt .Likes 0}}{{.Likes}}{{end}}</button>
+              <button type="submit" class="ghost">Like <span class="reaction-count">{{.Likes}}</span></button>
             </form>
             <form class="inline" method="post" action="/post/{{.ID}}/react">
               <input type="hidden" name="value" value="-1">
-              <button type="submit" class="ghost">Dislike {{if gt .Dislikes 0}}{{.Dislikes}}{{end}}</button>
+              <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
             </form>
           {{else}}
-            <span class="count">Likes {{if gt .Likes 0}}{{.Likes}}{{end}}</span>
-            <span class="count">Dislikes {{if gt .Dislikes 0}}{{.Dislikes}}{{end}}</span>
+            <span class="count">Likes {{.Likes}}</span>
+            <span class="count">Dislikes {{.Dislikes}}</span>
             <span class="hint">Login to react</span>
           {{end}}
         </div>

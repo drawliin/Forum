@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"net/url"
 	"slices"
 	"strconv"
 	"strings"
@@ -252,7 +253,18 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		return
 	}
 
-	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
+	referer := r.Referer()
+	u, err := url.Parse(referer)
+	if err != nil {
+		util.ClientError(w, r, http.StatusBadRequest, "invalid url ")
+	}
+
+	path := u.Path
+	if strings.HasPrefix(path, "/post/") {
+		http.Redirect(w, r, path, http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
 
 func togglePostReaction(userID, postID, value int) error {
