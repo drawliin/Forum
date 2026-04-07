@@ -703,6 +703,7 @@ input:focus, textarea:focus, select:focus {
 textarea { 
   resize: vertical; 
   min-height: 110px; 
+  max-height: max-content;
 }
 
 button[type=submit] {
