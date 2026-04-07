@@ -7,6 +7,7 @@ import (
 	"forum/internal/config"
 )
 
+// main loads the app config, initializes shared resources, and starts the server.
 func main() {
 	cfg := config.GetConfig()
 

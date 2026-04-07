@@ -18,6 +18,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// registerHandler shows the register page and creates new accounts.
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := util.CurrentUser(w, r)
 	if err != nil {
@@ -91,6 +92,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// loginHandler checks credentials and creates a session after a successful login.
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := util.CurrentUser(w, r)
 	if err != nil {
@@ -164,6 +166,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// logoutHandler removes the current session and sends the user back home.
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		util.ClientError(w, r, http.StatusMethodNotAllowed, "Method not allowed")
@@ -185,6 +188,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+// validateInput does the basic checks for register form fields.
 func validateInput(username string, email string, password string) error {
 	if len(username) > 30 || len(email) > 30 || len(password) > 64 {
 		return fmt.Errorf("field too long")

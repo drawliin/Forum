@@ -14,6 +14,7 @@ import (
 	"forum/internal/util"
 )
 
+// addComment saves a new comment under a post.
 func addComment(w http.ResponseWriter, r *http.Request, postID int) {
 	user, ok := util.RequireAuth(w, r)
 	if !ok {
@@ -55,6 +56,7 @@ func addComment(w http.ResponseWriter, r *http.Request, postID int) {
 	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
 }
 
+// reactToComment handles like and dislike actions on comments.
 func reactToComment(w http.ResponseWriter, r *http.Request, commentID int) {
 	user, ok := util.RequireAuth(w, r)
 	if !ok {
@@ -83,6 +85,7 @@ func reactToComment(w http.ResponseWriter, r *http.Request, commentID int) {
 	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
 }
 
+// toggleCommentReaction adds, removes, or swaps a user's reaction on a comment.
 func toggleCommentReaction(userID, commentID, value int) error {
 	var existing int
 	err := db.Database.QueryRow(
@@ -123,6 +126,7 @@ func toggleCommentReaction(userID, commentID, value int) error {
 	return err
 }
 
+// commentHandler parses the comment route and forwards to the right action.
 func commentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		util.ClientError(w, r, http.StatusMethodNotAllowed, "Method not allowed")

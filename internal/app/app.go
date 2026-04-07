@@ -11,6 +11,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// New prepares the shared parts of the app before requests start coming in.
 func New(cfg *config.Config) error {
 	if err := db.InitDB(cfg.DBPath); err != nil {
 		return err
@@ -22,6 +23,7 @@ func New(cfg *config.Config) error {
 	return nil
 }
 
+// Serve builds the HTTP server and starts listening on the given address.
 func Serve(addr string) error {
 	srv := &http.Server{
 		Addr:         addr,

@@ -4,6 +4,7 @@ import (
 	"forum/internal/models"
 )
 
+// FetchComments returns all comments for one post in time order.
 func FetchComments(postID int) ([]models.Comment, error) {
 	rows, err := Database.Query(
 		`SELECT c.id, c.content, c.user_id, u.username, c.created_at,
@@ -39,6 +40,7 @@ func FetchComments(postID int) ([]models.Comment, error) {
 	return comments, rows.Err()
 }
 
+// PostIDByComment finds the parent post of a comment.
 func PostIDByComment(commentID int) (int, error) {
 	var postID int
 	err := Database.QueryRow("SELECT post_id FROM comments WHERE id = ?", commentID).Scan(&postID)

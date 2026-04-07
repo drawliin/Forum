@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// staticHandler serves files from the static folder.
 func staticHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		util.ClientError(w, r, http.StatusMethodNotAllowed, "Method not allowed")

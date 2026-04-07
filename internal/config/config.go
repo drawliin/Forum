@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Config keeps the small set of settings used by the app at startup.
 type Config struct {
 	Port         string
 	DBPath       string
@@ -17,10 +18,12 @@ var config *Config = &Config{
 	CookieSecure: getenv("COOKIE_SECURE", "") == "1",
 }
 
+// GetConfig returns the app config that was built from the environment.
 func GetConfig() *Config {
 	return config
 }
 
+// getenv reads an env var and falls back if it is empty.
 func getenv(key, fallback string) string {
 	value := strings.TrimSpace(os.Getenv(key))
 	if value == "" {

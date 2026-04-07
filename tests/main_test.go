@@ -129,6 +129,7 @@ func TestMain(t *testing.T) {
 	}
 }
 
+// get is a small test helper for requests that should return 200.
 func get(client *http.Client, url string) error {
 	resp, err := client.Get(url)
 	if err != nil {
@@ -143,6 +144,7 @@ func get(client *http.Client, url string) error {
 	return nil
 }
 
+// post is a small test helper for form posts that should return 200.
 func post(client *http.Client, url_ string, data map[string][]string) error {
 	form := url.Values{}
 	for k, values := range data {
