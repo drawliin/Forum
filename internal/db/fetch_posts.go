@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// FetchPosts builds the home feed with optional user and category filters.
 func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post, error) {
 	query := `SELECT p.id, p.title, p.content, p.user_id, u.username, p.created_at,
         (SELECT COUNT(*) FROM post_reactions pr WHERE pr.post_id = p.id AND pr.value = 1) AS likes,
@@ -12,7 +13,7 @@ func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post
         FROM posts p
         JOIN users u ON u.id = p.user_id`
 
-	where := []string{"1=1"}
+	where := []string{}
 	args := []any{}
 
 	if categoryID > 0 {
@@ -28,14 +29,19 @@ func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post
 		args = append(args, user.ID)
 	}
 
-	query = query + " WHERE " + strings.Join(where, " AND ") + " ORDER BY p.created_at DESC"
+	if len(where) > 0 {
+		query += " WHERE " + strings.Join(where, " AND ")
+	}
+	query += " ORDER BY p.created_at DESC"
 
 	rows, err := Database.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var posts []models.Post
+	postIDs := make([]int, 0)
 	for rows.Next() {
 		var post models.Post
 		if err := rows.Scan(
@@ -48,30 +54,28 @@ func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post
 			&post.Likes,
 			&post.Dislikes,
 		); err != nil {
-			rows.Close()
 			return nil, err
 		}
 		posts = append(posts, post)
+		postIDs = append(postIDs, post.ID)
 	}
 	if err := rows.Err(); err != nil {
-		rows.Close()
 		return nil, err
 	}
-	if err := rows.Close(); err != nil {
+
+	postCategories, err := FetchCategoriesForPosts(postIDs)
+	if err != nil {
 		return nil, err
 	}
 
 	for i := range posts {
-		categories, err := FetchPostCategories(posts[i].ID)
-		if err != nil {
-			return nil, err
-		}
-		posts[i].Categories = categories
+		posts[i].Categories = postCategories[posts[i].ID]
 	}
 
 	return posts, nil
 }
 
+// FetchPostByID loads one post together with its category list.
 func FetchPostByID(postID int) (*models.Post, error) {
 	var post models.Post
 	err := Database.QueryRow(
