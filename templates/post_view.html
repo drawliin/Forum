@@ -26,8 +26,8 @@
           <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
         </form>
       {{else}}
-        <span class="count">Likes {{.Post.Likes}}</span>
-        <span class="count">Dislikes {{.Post.Dislikes}}</span>
+          <button class="count">Like <span class="reaction-count">{{.Post.Likes}}</span></button>
+          <button class="count">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
         <span class="hint">Login to react</span>
       {{end}}
     </div>
