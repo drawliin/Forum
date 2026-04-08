@@ -70,10 +70,6 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 			}, http.StatusBadRequest)
 			return
 		}
-		if len(content) > 1028 {
-			util.ClientError(w, r, http.StatusBadRequest, "Content too long")
-			return
-		}
 
 		validIDs, err := db.CategoryIDSet()
 		if err != nil {
