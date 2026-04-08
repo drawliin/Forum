@@ -37,7 +37,7 @@
           </div>
         </header>
           <a href="/post/{{.ID}}">
-            <p class="excerpt">{{.Content}}</p>
+            <p class="excerpt">{{truncate .Content 1000}}</p>
           </a>
         <div class="categories">
           {{range .Categories}}
