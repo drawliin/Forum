@@ -71,6 +71,11 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if len(content) > 10000 {
+			util.ClientError(w, r, http.StatusBadRequest, "Content too long")
+			return
+		}
+
 		validIDs, err := db.CategoryIDSet()
 		if err != nil {
 			util.ServerError(w, r, "Failed to load categories")
