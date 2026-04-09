@@ -48,11 +48,11 @@
           {{if $.User}}
             <form class="inline" method="post" action="/post/{{.ID}}/react">
               <input type="hidden" name="value" value="1">
-              <button type="submit" class="ghost">Like <span class="reaction-count">{{.Likes}}</span></button>
+              <button type="submit" class="ghost react">Like <span class="reaction-count">{{.Likes}}</span></button>
             </form>
             <form class="inline" method="post" action="/post/{{.ID}}/react">
               <input type="hidden" name="value" value="-1">
-              <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
+              <button type="submit" class="ghost react">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
             </form>
           {{else}}
             <span class="count">Likes {{.Likes}}</span>

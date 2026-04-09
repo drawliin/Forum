@@ -1,8 +1,9 @@
 package db
 
 import (
-	"forum/internal/models"
 	"strings"
+
+	"forum/internal/models"
 )
 
 func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post, error) {
@@ -102,4 +103,23 @@ func FetchPostByID(postID int) (*models.Post, error) {
 	}
 	post.Categories = categories
 	return &post, nil
+}
+
+func FetchPostReaction(postID int) (likes, dislikes int, err error) {
+	// var post models.Post
+	err = Database.QueryRow(
+		`SELECT
+		SUM(CASE WHEN value = 1 THEN 1 ELSE 0 END ) AS likes,
+        SUM(CASE WHEN value = -1 THEN 1 ELSE 0 END ) AS dislikes
+        FROM post_reactions
+        WHERE post_id = ?`,
+		postID,
+	).Scan(
+		&likes,
+		&dislikes,
+	)
+	if err != nil {
+		return 0, 0, err
+	}
+	return likes, dislikes, nil
 }
