@@ -17,6 +17,7 @@ import (
 	"forum/internal/util"
 )
 
+// postNewHandler shows the create form and saves a new post.
 func postNewHandler(w http.ResponseWriter, r *http.Request) {
 	user, ok := util.RequireAuth(w, r)
 	if !ok {
@@ -67,6 +68,10 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 				User:       user,
 				Categories: categories,
 			}, http.StatusBadRequest)
+			return
+		}
+		if len(content) > 1028 {
+			util.ClientError(w, r, http.StatusBadRequest, "Content too long")
 			return
 		}
 
@@ -152,6 +157,7 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// postHandler reads the post path and sends the request to the matching action.
 func postHandler(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/post/")
 	parts := strings.Split(strings.Trim(path, "/"), "/")
@@ -195,6 +201,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// viewPost loads one post page with its comments.
 func viewPost(w http.ResponseWriter, r *http.Request, postID int) {
 	user, err := util.CurrentUser(w, r)
 	if err != nil {
@@ -233,6 +240,7 @@ func viewPost(w http.ResponseWriter, r *http.Request, postID int) {
 	templates.Render(w, "post_view", data, 0)
 }
 
+// reactToPost handles like and dislike actions on posts.
 func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 	user, ok := util.RequireAuth(w, r)
 	if !ok {
@@ -267,6 +275,7 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 	})
 }
 
+// togglePostReaction adds, removes, or swaps a user's reaction on a post.
 func togglePostReaction(userID, postID, value int) error {
 	var existing int
 	err := db.Database.QueryRow(

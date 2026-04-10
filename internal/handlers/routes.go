@@ -14,6 +14,7 @@ var refillTime = time.Second
 var lastRefill = time.Now()
 var mutex sync.Mutex
 
+// SetupRoutes connects URL paths to their handlers.
 func SetupRoutes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/static/", staticHandler)
@@ -29,6 +30,7 @@ func SetupRoutes() http.Handler {
 	return rateLimiterMiddleware(mux)
 }
 
+// rateLimiterMiddleware slows down bursts of requests with a simple token bucket.
 func rateLimiterMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mutex.Lock()

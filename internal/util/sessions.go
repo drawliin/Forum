@@ -15,6 +15,7 @@ import (
 
 const sessionDuration = 7 * 24 * time.Hour
 
+// CurrentUser checks the session cookie and returns the logged-in user if it is valid.
 func CurrentUser(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
@@ -50,6 +51,7 @@ func CurrentUser(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 	return &user, nil
 }
 
+// RequireAuth is a small guard for protected routes.
 func RequireAuth(w http.ResponseWriter, r *http.Request) (*models.User, bool) {
 	user, err := CurrentUser(w, r)
 	if err != nil {
@@ -63,6 +65,7 @@ func RequireAuth(w http.ResponseWriter, r *http.Request) (*models.User, bool) {
 	return user, true
 }
 
+// CreateSession saves a new session in the database and sends its cookie to the browser.
 func CreateSession(w http.ResponseWriter, r *http.Request, userID int) error {
 	if _, err := db.Database.Exec("DELETE FROM sessions WHERE user_id = ?", userID); err != nil {
 		return err
@@ -94,6 +97,7 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) error {
 	return nil
 }
 
+// ClearSessionCookie removes the session cookie from the browser.
 func ClearSessionCookie(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",

@@ -16,6 +16,7 @@ var defaultCategories = []string{
 
 var Database *sql.DB
 
+// InitDB opens the database, applies the schema, and seeds starter data.
 func InitDB(dbPath string) error {
 	var err error
 	dbPath = config.ResolvePath(dbPath)
@@ -48,6 +49,7 @@ func InitDB(dbPath string) error {
 	return seedCategories()
 }
 
+// seedCategories adds the default categories only when the table is still empty.
 func seedCategories() error {
 	var count int
 	err := Database.QueryRow("SELECT COUNT(*) FROM categories").Scan(&count)

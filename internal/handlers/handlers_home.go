@@ -11,6 +11,7 @@ import (
 	"forum/internal/util"
 )
 
+// homeHandler loads the feed page with optional filters from the query string.
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		util.ClientError(w, r, http.StatusNotFound, "Page not found")
@@ -33,7 +34,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if filter != "" && user == nil {
-		util.ClientError(w, r, http.StatusUnauthorized, "Please log in to use this filter")
+		util.ClientError(w, r, http.StatusUnauthorized, "Please log in first")
 		return
 	}
 

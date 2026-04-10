@@ -13,6 +13,7 @@ import (
 
 var templates map[string]*template.Template
 
+// InitTemplates parses the base layout together with each page template.
 func InitTemplates() error {
 	funcs := template.FuncMap{
 		"formatUnix": func(ts int64) string {
@@ -47,6 +48,7 @@ func InitTemplates() error {
 	return nil
 }
 
+// Render executes one page template set and writes the final HTML response.
 func Render(w http.ResponseWriter, name string, data models.TemplateData, status int) {
 	tmpl, ok := templates[name]
 	if !ok {
