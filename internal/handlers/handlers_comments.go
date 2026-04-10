@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -71,12 +72,19 @@ func reactToComment(w http.ResponseWriter, r *http.Request, commentID int) {
 		return
 	}
 
-	postID, err := db.PostIDByComment(commentID)
+	//Fetch comment's reactions
+	likes,dislikes,err:=db.FetchCommentReaction(commentID)
 	if err != nil {
-		util.ServerError(w, r, "Failed to reload post")
+		util.ServerError(w,r,"Failed to load comment ractions")
 		return
 	}
-	http.Redirect(w, r, "/post/"+strconv.Itoa(postID), http.StatusSeeOther)
+
+	//Send Likes and Dislikes in Json File
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]int{
+		"likes":    likes,
+		"dislikes": dislikes,
+	})
 }
 
 func toggleCommentReaction(userID, commentID, value int) error {
