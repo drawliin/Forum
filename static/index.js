@@ -1,46 +1,91 @@
-console.log("test");
+// Get buttons element for both posts and comments
+let btnPost = document.querySelectorAll(".react-post")
+let btnComment= document.querySelectorAll(".react-comment")
 
-let btn = document.querySelectorAll(".react")
-btn.forEach(button => {
+//Add event listener on post buttons
+btnPost.forEach(button => {
     button.addEventListener("click", function (e) {
-        // e.preventDefault();
+        e.preventDefault();
 
+        //prevent redirection to post/id fron card's onclick
+        e.stopPropagation();
+        
         const postID = this.dataset.postId;
         const value = this.dataset.value;
 
-        sendReaction(postID, value);
+        sendPostReaction(postID, value,this);
     });
 });
 
-function sendReaction(postID, value) {
+//Add event listener on Comment buttons
+btnComment.forEach(button => {
+    button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const commentID = this.dataset.commentId;
+        const value = this.dataset.value;
+        
+        sendCommentReaction(commentID, value, this)
+    });
+});
+
+//Sends a post request when triggered with the value of the button
+//it then receives the Json with the number of likes/dislikes
+//and display them on the button using the id attribute
+function sendPostReaction(postID, value, button) {
+    
+    button.disabled = true;
+
     fetch(`/post/${postID}/react`, {
         method: "POST",
-        credentials:"include",
+        credentials: "include",
         headers: {
-            "Content-Type":"application/x-www-form-urlencoded",
+            "Content-Type": "application/x-www-form-urlencoded",
         },
-        body:`value=${value}`
+        body: `value=${value}`
     })
         .then(res => {
-            if (!res.ok) {
-                console.error("Request failed");
-                return;
-            }
-            res.json()
+            if (!res.ok) throw new Error("Request failed");
+            return res.json();
         })
         .then(data => {
-            console.log(data);
             
             document.getElementById(`likes-${postID}`).textContent = data.likes;
             document.getElementById(`dislikes-${postID}`).textContent = data.dislikes;
         })
-        // .then(response => {
-        //     if (response.ok) {
-        //         console.log("reaction updated")
-        //         location.reload();
-        //     } else {
-        //         console.error("Failed to react")
-        // }
-        // })
-        .catch(error=> console.error("Error:",error))
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            button.disabled = false;
+        });
+}
+
+//Sends a post request when triggered with the value of the button
+//using the comment id 
+//it then receives the Json with the number of likes/dislikes
+//and display them on the button using the id attribute
+function sendCommentReaction(commentID, value, button) {
+    
+    button.disabled = true;
+
+    fetch(`/comment/${commentID}/react`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `value=${value}`
+    })
+        .then(res => {
+            if (!res.ok) throw new Error("Request failed");
+            return res.json();
+        })
+        .then(data => {
+            
+            document.getElementById(`likes-${commentID}-comment`).textContent = data.likes;
+            document.getElementById(`dislikes-${commentID}-comment`).textContent = data.dislikes;
+        })
+        .catch(error => console.error("Error:", error))
+        .finally(() => {
+            button.disabled = false;
+        });
 }
