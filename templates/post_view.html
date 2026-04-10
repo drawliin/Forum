@@ -17,14 +17,22 @@
     <div class="reactions">
       
       {{if .User}}
-        <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
-          <input type="hidden"  name="value" value="1">
-          <button type="submit" data-post-id="{{.Post.ID}}" data-value="1" class="ghost react">Like <span class="reaction-count" id="likes-{{.Post.ID}}">{{.Post.Likes}}</span></button>
-        </form>
-        <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
-          <input type="hidden"  name="value" value="-1">
-          <button type="submit" data-post-id="{{.Post.ID}}" data-value="-1" class="ghost react">Dislike <span class="reaction-count" id="dislikes-{{.Post.ID}}">{{.Post.Dislikes}}</span></button>
-        </form>
+         <!-- LIKE BUTTON -->
+          <button 
+            type="button" 
+            data-post-id="{{.Post.ID}}" 
+            data-value="1" 
+            class="ghost react-post">
+            Like <span class="reaction-count" id="likes-{{.Post.ID}}">{{.Post.Likes}}</span>
+          </button>
+         <!-- DISLIKE BUTTON -->
+          <button 
+            type="button" 
+            data-post-id="{{.Post.ID}}" 
+            data-value="-1" 
+            class="ghost react-post">
+            Dislike <span class="reaction-count" id="dislikes-{{.Post.ID}}">{{.Post.Dislikes}}</span>
+          </button>
       {{else}}
         <span class="count">Likes {{.Post.Likes}}</span>
         <span class="count">Dislikes {{.Post.Dislikes}}</span>
@@ -55,14 +63,24 @@
           <div class="reactions">
             
             {{if $.User}}
-              <form class="inline" method="post" action="/comment/{{.ID}}/react">
-                <input type="hidden" data-comment-id="{{.ID}}" name="value" value="1">
-                <button type="submit" data-value="1" class="ghost react">Like {{if gt .Likes 0}}<span class="reaction-count" id="likes-{{.ID}}">{{.Likes}}</span>{{end}}</button>
-              </form>
-              <form class="inline" method="post" action="/comment/{{.ID}}/react">
-                <input type="hidden" data-comment-id="{{.ID}}" name="value" value="-1">
-                <button type="submit" data-value="-1" class="ghost react">Dislike {{if gt .Dislikes 0}}<span class="reaction-count" id="dislikes-{{.ID}}">{{.Dislikes}}</span>{{end}}</button>
-              </form>
+            <!-- COMMENT LIKE -->
+                <button 
+                  type="button" 
+                  data-value="1" 
+                  data-comment-id="{{.ID}}"
+                  class="ghost react-comment">
+                  Like 
+                  <span class="reaction-count" id="likes-{{.ID}}-comment">{{.Likes}}</span>
+                </button>
+                <!-- COMMENT DISLIKE -->
+                <button 
+                  type="button" 
+                  data-value="-1" 
+                  data-comment-id="{{.ID}}"
+                  class="ghost react-comment">
+                  Dislike
+                  <span class="reaction-count" id="dislikes-{{.ID}}-comment">{{.Dislikes}}</span>
+                </button>
             {{else}}
               <span class="count">Likes {{if gt .Likes 0}}{{.Likes}}{{end}}</span>
               <span class="count">Dislikes {{if gt .Dislikes 0}}{{.Dislikes}}{{end}}</span>

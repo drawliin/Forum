@@ -46,14 +46,24 @@
         </div>
         <div class="reactions">
           {{if $.User}}
-            <form class="inline" method="post" action="/post/{{.ID}}/react">
-              <input type="hidden" name="value" value="1">
-              <button type="submit" class="ghost react">Like <span class="reaction-count">{{.Likes}}</span></button>
-            </form>
-            <form class="inline" method="post" action="/post/{{.ID}}/react">
-              <input type="hidden" name="value" value="-1">
-              <button type="submit" class="ghost react">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
-            </form>
+          <!-- LIKE BUTTON -->
+              <button 
+                type="button" 
+                data-post-id="{{.ID}}"
+                data-value="1"
+                class="ghost react-post">
+                Like 
+                <span class="reaction-count" id="likes-{{.ID}}">{{.Likes}}</span>
+              </button>
+              <!-- DISLIKE BUTTON -->
+              <button 
+                type="button" 
+                data-post-id="{{.ID}}"
+                data-value="-1"
+                class="ghost react-post">
+                Dislike 
+                <span class="reaction-count" id="dislikes-{{.ID}}">{{.Dislikes}}</span>
+              </button>
           {{else}}
             <span class="count">Likes {{.Likes}}</span>
             <span class="count">Dislikes {{.Dislikes}}</span>
