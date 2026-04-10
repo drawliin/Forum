@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"slices"
 	"strconv"
@@ -253,33 +252,19 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		util.ServerError(w, r, "Failed to react to post")
 		return
 	}
-	fmt.Println("post Id: ", postID)
+	//Fetch post reaction
 	likes, dislikes, err := db.FetchPostReaction(postID)
 	if err != nil {
-		fmt.Println("Error:", err)
 		util.ServerError(w, r, "Failed to load reactions")
 		return
 	}
 
-	fmt.Printf("likes: %v\tdislikes: %v\n", likes, dislikes)
+	//Send Json file
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]int{
 		"likes":    likes,
 		"dislikes": dislikes,
 	})
-
-	// referer := r.Referer()
-	// u, err := url.Parse(referer)
-	// if err != nil {
-	// 	util.ClientError(w, r, http.StatusBadRequest, "invalid url ")
-	// }
-
-	// path := u.Path
-	// if strings.HasPrefix(path, "/post/") {
-	// 	http.Redirect(w, r, path, http.StatusSeeOther)
-	// } else {
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// }
 }
 
 func togglePostReaction(userID, postID, value int) error {
