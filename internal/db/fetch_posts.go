@@ -105,12 +105,12 @@ func FetchPostByID(postID int) (*models.Post, error) {
 	return &post, nil
 }
 
+//FetchPostReaction fetches the number of likes and dislikes of a post based on postID
 func FetchPostReaction(postID int) (likes, dislikes int, err error) {
-	// var post models.Post
 	err = Database.QueryRow(
 		`SELECT
-		SUM(CASE WHEN value = 1 THEN 1 ELSE 0 END ) AS likes,
-        SUM(CASE WHEN value = -1 THEN 1 ELSE 0 END ) AS dislikes
+		COALESCE(SUM(CASE WHEN value = 1 THEN 1 ELSE 0 END ),0) AS likes,
+        COALESCE(SUM(CASE WHEN value = -1 THEN 1 ELSE 0 END ),0) AS dislikes
         FROM post_reactions
         WHERE post_id = ?`,
 		postID,
