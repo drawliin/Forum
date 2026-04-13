@@ -539,6 +539,15 @@ form.inline {
   color: #5f1eb3;
 }
 
+.read-more {
+  color: #7b22f0;
+  font-weight: bold;
+}
+
+.read-more:hover {
+  color: #5f1eb3;
+}
+
 .categories, .tags {
   display: flex;
   flex-wrap: wrap;
