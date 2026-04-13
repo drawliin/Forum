@@ -45,10 +45,24 @@ function sendPostReaction(postID, value, button) {
         body: `value=${value}`
     })
         .then(res => {
-            if (!res.ok) throw new Error("Request failed");
+            if (!res.ok) {
+                return res.text().then(html => {
+                document.open();
+                document.writeln(html);
+                document.close();})  
+            }
+                // throw new Error("Request failed");
+
+            const contentType = res.headers.get("content-type");
+
+            if (!contentType|| !contentType.includes("application/json")) {
+                window.location.href = "/login";
+                return;
+            }
             return res.json();
         })
         .then(data => {
+            if (!data) return;
             
             document.getElementById(`likes-${postID}`).textContent = data.likes;
             document.getElementById(`dislikes-${postID}`).textContent = data.dislikes;
@@ -76,11 +90,22 @@ function sendCommentReaction(commentID, value, button) {
         body: `value=${value}`
     })
         .then(res => {
-            if (!res.ok) throw new Error("Request failed");
+            if (!res.ok) {
+                return res.text().then(html => {
+                document.open();
+                document.writeln(html);
+                document.close();})  
+            }
+            const contentType = res.headers.get("content-type");
+
+            if (!contentType|| !contentType.includes("application/json")) {
+                window.location.href = "/login";
+                return;
+            }
             return res.json();
         })
         .then(data => {
-            
+            if (!data) return;
             document.getElementById(`likes-${commentID}-comment`).textContent = data.likes;
             document.getElementById(`dislikes-${commentID}-comment`).textContent = data.dislikes;
         })
