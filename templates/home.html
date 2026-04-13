@@ -53,9 +53,6 @@
             <input type="hidden" name="value" value="-1">
             <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
           </form>
-          {{if not $.User}}
-            <span class="hint">Login to react</span>
-          {{end}}
         </div>
       </article>
     {{end}}
