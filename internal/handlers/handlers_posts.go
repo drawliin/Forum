@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -16,6 +18,8 @@ import (
 	"forum/internal/templates"
 	"forum/internal/util"
 )
+
+var re *regexp.Regexp = regexp.MustCompile(`(\r?\n)+`)
 
 // postNewHandler shows the create form and saves a new post.
 func postNewHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +44,8 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 		title := strings.TrimSpace(r.FormValue("title"))
 		content := strings.TrimSpace(r.FormValue("content"))
 		categoryValues := r.Form["categories"]
+
+		content = re.ReplaceAllString(content, "\r\n")
 
 		if title == "" || content == "" {
 			categories, err := db.FetchCategories()
@@ -70,7 +76,8 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 			}, http.StatusBadRequest)
 			return
 		}
-		if len(content) > 1028 {
+
+		if len(content) > 10000 {
 			util.ClientError(w, r, http.StatusBadRequest, "Content too long")
 			return
 		}

@@ -37,7 +37,7 @@
           </div>
         </header>
           <a href="/post/{{.ID}}">
-            <p class="excerpt">{{.Content}}</p>
+            <p class="excerpt">{{truncate .Content 1000}}</p>
           </a>
         <div class="categories">
           {{range .Categories}}
@@ -65,8 +65,8 @@
                 <span class="reaction-count" id="dislikes-{{.ID}}">{{.Dislikes}}</span>
               </button>
           {{else}}
-            <span class="count">Likes {{.Likes}}</span>
-            <span class="count">Dislikes {{.Dislikes}}</span>
+            <button class="count">Like <span class="reaction-count">{{.Likes}}</span></button>
+            <button class="count">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
             <span class="hint">Login to react</span>
           {{end}}
         </div>

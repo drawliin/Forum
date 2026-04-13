@@ -8,7 +8,7 @@
         <span>{{formatUnix .Post.CreatedAt}}</span>
       </div>
     </header>
-    <p>{{.Post.Content}}</p>
+    <p class="excerpt">{{.Post.Content}}</p>
     <div class="categories">
       {{range .Post.Categories}}
         <span class="tag">{{.Name}}</span>
@@ -34,8 +34,8 @@
             Dislike <span class="reaction-count" id="dislikes-{{.Post.ID}}">{{.Post.Dislikes}}</span>
           </button>
       {{else}}
-        <span class="count">Likes {{.Post.Likes}}</span>
-        <span class="count">Dislikes {{.Post.Dislikes}}</span>
+          <button class="count">Like <span class="reaction-count">{{.Post.Likes}}</span></button>
+          <button class="count">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
         <span class="hint">Login to react</span>
       {{end}}
     </div>
@@ -82,8 +82,8 @@
                   <span class="reaction-count" id="dislikes-{{.ID}}-comment">{{.Dislikes}}</span>
                 </button>
             {{else}}
-              <span class="count">Likes {{if gt .Likes 0}}{{.Likes}}{{end}}</span>
-              <span class="count">Dislikes {{if gt .Dislikes 0}}{{.Dislikes}}{{end}}</span>
+              <span class="count">Likes <span class="reaction-count">{{.Likes}}</span></span>
+              <span class="count">Dislikes <span class="reaction-count">{{.Dislikes}}</span></span>
               <span class="hint">Login to react</span>
             {{end}}
           </div>

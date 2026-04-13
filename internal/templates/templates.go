@@ -22,6 +22,13 @@ func InitTemplates() error {
 			}
 			return time.Unix(ts, 0).Format("Jan 02, 2006 15:04")
 		},
+		"truncate": func(content string, limit int) template.HTML {
+            if len(content) > limit {
+				content = content[:limit]
+                return  template.HTML(content + `<span class="read-more"> ... read more</span>`)
+            }
+            return template.HTML(content)
+        },
 	}
 
 	pages := []string{
