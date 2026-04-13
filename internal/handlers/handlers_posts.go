@@ -70,7 +70,8 @@ func postNewHandler(w http.ResponseWriter, r *http.Request) {
 			}, http.StatusBadRequest)
 			return
 		}
-		if len(content) > 1028 {
+
+		if len(content) > 10000 {
 			util.ClientError(w, r, http.StatusBadRequest, "Content too long")
 			return
 		}
