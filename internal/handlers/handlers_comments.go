@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -79,18 +78,14 @@ func reactToComment(w http.ResponseWriter, r *http.Request, commentID int) {
 	}
 
 	//Fetch comment's reactions
-	likes,dislikes,err:=db.FetchCommentReaction(commentID)
+	likes, dislikes, err := db.FetchCommentReaction(commentID)
 	if err != nil {
-		util.ServerError(w,r,"Failed to load comment ractions")
+		util.ServerError(w, r, "Failed to load comment ractions")
 		return
 	}
 
-	//Send Likes and Dislikes in Json File
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]int{
-		"likes":    likes,
-		"dislikes": dislikes,
-	})
+	// Send Likes and Dislikes in Json resp
+	WriteJson(w, likes, dislikes)
 }
 
 // toggleCommentReaction adds, removes, or swaps a user's reaction on a comment.

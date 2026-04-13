@@ -3,10 +3,8 @@ package handlers
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"net/http"
-	"net/url"
 	"regexp"
 	"slices"
 	"strconv"
@@ -274,12 +272,8 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		return
 	}
 
-	//Send Json file
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]int{
-		"likes":    likes,
-		"dislikes": dislikes,
-	})
+	// Send Json resp
+	WriteJson(w, likes, dislikes)
 }
 
 // togglePostReaction adds, removes, or swaps a user's reaction on a post.
