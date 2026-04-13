@@ -517,7 +517,6 @@ form.inline {
   overflow: hidden;
   line-height: 1.6;
   font-weight: 400;
-  max-height: 40vh;
   white-space: pre-line;
 }
 
