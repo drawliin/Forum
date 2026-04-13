@@ -45,18 +45,15 @@
           {{end}}
         </div>
         <div class="reactions">
-          {{if $.User}}
-            <form class="inline" method="post" action="/post/{{.ID}}/react">
-              <input type="hidden" name="value" value="1">
-              <button type="submit" class="ghost">Like <span class="reaction-count">{{.Likes}}</span></button>
-            </form>
-            <form class="inline" method="post" action="/post/{{.ID}}/react">
-              <input type="hidden" name="value" value="-1">
-              <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
-            </form>
-          {{else}}
-            <button class="count">Like <span class="reaction-count">{{.Likes}}</span></button>
-            <button class="count">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
+          <form class="inline" method="post" action="/post/{{.ID}}/react">
+            <input type="hidden" name="value" value="1">
+            <button type="submit" class="ghost">Like <span class="reaction-count">{{.Likes}}</span></button>
+          </form>
+          <form class="inline" method="post" action="/post/{{.ID}}/react">
+            <input type="hidden" name="value" value="-1">
+            <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
+          </form>
+          {{if not $.User}}
             <span class="hint">Login to react</span>
           {{end}}
         </div>
