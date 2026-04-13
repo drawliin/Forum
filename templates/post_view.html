@@ -8,7 +8,7 @@
         <span>{{formatUnix .Post.CreatedAt}}</span>
       </div>
     </header>
-    <p>{{.Post.Content}}</p>
+    <p class="excerpt">{{.Post.Content}}</p>
     <div class="categories">
       {{range .Post.Categories}}
         <span class="tag">{{.Name}}</span>
