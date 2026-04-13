@@ -13,7 +13,7 @@ import (
 
 // New prepares the shared parts of the app before requests start coming in.
 func New(cfg *config.Config) error {
-	if err := db.InitDB(cfg.DBPath); err != nil {
+	if err := db.InitDB(cfg.DBPath, cfg.SchemaPath); err != nil {
 		return err
 	}
 	if err := templates.InitTemplates(); err != nil {

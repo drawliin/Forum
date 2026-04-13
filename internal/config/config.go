@@ -10,12 +10,14 @@ type Config struct {
 	Port         string
 	DBPath       string
 	CookieSecure bool
+	SchemaPath string
 }
 
 var config *Config = &Config{
 	Port:         getenv("PORT", "8080"),
 	DBPath:       ResolvePath(getenv("DB_PATH", "./data/forum.db")),
 	CookieSecure: getenv("COOKIE_SECURE", "") == "1",
+	SchemaPath: ResolvePath("schema.sql"),
 }
 
 // GetConfig returns the app config that was built from the environment.

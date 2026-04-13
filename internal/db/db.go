@@ -17,7 +17,7 @@ var defaultCategories = []string{
 var Database *sql.DB
 
 // InitDB opens the database, applies the schema, and seeds starter data.
-func InitDB(dbPath string) error {
+func InitDB(dbPath, schemaPath string) error {
 	var err error
 	dbPath = config.ResolvePath(dbPath)
 	if dbPath != ":memory:" {
@@ -39,7 +39,7 @@ func InitDB(dbPath string) error {
 		return err
 	}
 
-	schema, err := os.ReadFile(config.ResolvePath("schema.sql"))
+	schema, err := os.ReadFile(schemaPath)
 	if err != nil {
 		return err
 	}
