@@ -10,7 +10,7 @@ import (
 	"forum/internal/db"
 	"forum/internal/models"
 
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 )
 
 const sessionDuration = 7 * 24 * time.Hour
@@ -71,7 +71,12 @@ func CreateSession(w http.ResponseWriter, r *http.Request, userID int) error {
 		return err
 	}
 
-	sessionID := uuid.New().String()
+	u, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
+	sessionID := u.String()
 	expires := time.Now().Add(sessionDuration).Unix()
 
 	if _, err := db.Database.Exec(
