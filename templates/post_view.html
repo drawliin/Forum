@@ -16,14 +16,20 @@
     </div>
     <div class="reactions">
       
-      <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
-        <input type="hidden" name="value" value="1">
-        <button type="submit" class="ghost">Like <span class="reaction-count">{{.Post.Likes}}</span></button>
-      </form>
-      <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
-        <input type="hidden" name="value" value="-1">
-        <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
-      </form>
+      {{if .User}}
+        <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
+          <input type="hidden" name="value" value="1">
+          <button type="submit" class="ghost">Like <span class="reaction-count">{{.Post.Likes}}</span></button>
+        </form>
+        <form class="inline" method="post" action="/post/{{.Post.ID}}/react">
+          <input type="hidden" name="value" value="-1">
+          <button type="submit" class="ghost">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
+        </form>
+      {{else}}
+          <button class="count">Like <span class="reaction-count">{{.Post.Likes}}</span></button>
+          <button class="count">Dislike <span class="reaction-count">{{.Post.Dislikes}}</span></button>
+        <span class="hint">Login to react</span>
+      {{end}}
     </div>
   </article>
 
@@ -48,18 +54,24 @@
           <p>{{.Content}}</p>
           <div class="reactions">
             
-            <form class="inline" method="post" action="/comment/{{.ID}}/react">
-              <input type="hidden" name="value" value="1">
-              <button type="submit" class="ghost">
-                Like <span class="reaction-count">{{.Likes}}</span>
-              </button>
-            </form>
+            {{if $.User}}
+              <form class="inline" method="post" action="/comment/{{.ID}}/react">
+                <input type="hidden" name="value" value="1">
+                <button type="submit" class="ghost">
+                  Like <span class="reaction-count">{{.Likes}}</span>
+                </button>
+              </form>
               <form class="inline" method="post" action="/comment/{{.ID}}/react">
                 <input type="hidden" name="value" value="-1">
                 <button type="submit" class="ghost">
                   Dislike <span class="reaction-count">{{.Dislikes}}</span>
                 </button>
               </form>
+            {{else}}
+              <span class="count">Likes <span class="reaction-count">{{.Likes}}</span></span>
+              <span class="count">Dislikes <span class="reaction-count">{{.Dislikes}}</span></span>
+              <span class="hint">Login to react</span>
+            {{end}}
           </div>
         </article>
       {{end}}

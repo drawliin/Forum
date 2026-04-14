@@ -248,17 +248,10 @@ func viewPost(w http.ResponseWriter, r *http.Request, postID int) {
 
 // reactToPost handles like and dislike actions on posts.
 func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
-	user, err := util.CurrentUser(w, r)
-	if err != nil {
-		util.ServerError(w, r, "Failed to get current user")
+	user, ok := util.RequireAuth(w, r)
+	if !ok {
 		return
 	}
-
-	if user == nil {
-		http.Redirect(w, r, "/register", http.StatusSeeOther)
-		return
-	}
-
 	if err := r.ParseForm(); err != nil {
 		util.ClientError(w, r, http.StatusBadRequest, "Invalid form")
 		return
