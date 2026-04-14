@@ -6,7 +6,6 @@ services:
     environment:
       - DB_PATH=/app/data/forum.db
       - PORT=8080
-      - CGO_ENABLED=1
 
     volumes:
       - ./data:/app/data

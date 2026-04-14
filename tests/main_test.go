@@ -20,6 +20,7 @@ func TestMain(t *testing.T) {
 		Port:         "",
 		DBPath:       ":memory:", // create db in RAM instead of disk
 		CookieSecure: false,
+		SchemaPath:   config.ResolvePath("schema.sql"),
 	}
 	err := app.New(cfg)
 	if err != nil {
@@ -48,7 +49,10 @@ func TestMain(t *testing.T) {
 		{"email": {"a@a"}, "username": {"a b"}, "password": {"a b"}},
 		{"email": {"badEmail@"}, "username": {"a"}, "password": {"a"}},
 		{"email": {"a@a"}, "username": {""}, "password": {"a"}},
+		{"email": {"a@a"}, "username": {"abcdabcdabcdabcdabcdabcdabcdabcd"}, "password": {"a"}},
 		{"email": {"a@a"}, "username": {"a"}, "password": {""}},
+		{"email": {"a@a"}, "username": {"a"}, "password": {"  "}},
+		{"email": {"a@a"}, "username": {"a"}, "password": {strings.Repeat("abcd", 20)}},
 	}
 	for _, badCase := range badRegisterCases {
 		if err := post(client, testServer.URL+"/register", badCase); err == nil {

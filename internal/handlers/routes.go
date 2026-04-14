@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-const maxTokens = 100
+const maxTokens = 1000
+const refillTime = time.Second
 
 var tokens = maxTokens
-var refillTime = time.Second
 var lastRefill = time.Now()
 var mutex sync.Mutex
 
