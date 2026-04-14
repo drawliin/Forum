@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS post_reactions (
 CREATE TABLE IF NOT EXISTS comment_reactions (
     comment_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    value INTEGER NOT NULL,
+    value INTEGER NOT NULL CHECK (value IN (1, -1)),
     created_at INTEGER NOT NULL,
     PRIMARY KEY (comment_id, user_id),
     FOREIGN KEY(comment_id) REFERENCES comments(id) ON DELETE CASCADE,
