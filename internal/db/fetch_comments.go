@@ -46,3 +46,23 @@ func PostIDByComment(commentID int) (int, error) {
 	err := Database.QueryRow("SELECT post_id FROM comments WHERE id = ?", commentID).Scan(&postID)
 	return postID, err
 }
+
+//Fetch comment gets the number of likes and dislikes of a comment based on its ID
+//the query eturns 0 if a NULL value is found
+func FetchCommentReaction(commentID int) (likes, dislikes int, err error) {
+	err = Database.QueryRow(
+		`SELECT
+		COALESCE(SUM(CASE WHEN value = 1 THEN 1 ELSE 0 END ),0) AS likes,
+        COALESCE(SUM(CASE WHEN value = -1 THEN 1 ELSE 0 END ),0) AS dislikes
+        FROM comment_reactions
+        WHERE comment_id = ?`,
+		commentID,
+	).Scan(
+		&likes,
+		&dislikes,
+	)
+	if err != nil {
+		return 0, 0, err
+	}
+	return likes, dislikes, nil
+}

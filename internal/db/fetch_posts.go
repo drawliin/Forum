@@ -1,8 +1,9 @@
 package db
 
 import (
-	"forum/internal/models"
 	"strings"
+
+	"forum/internal/models"
 )
 
 // FetchPosts builds the home feed with optional user and category filters.
@@ -106,4 +107,23 @@ func FetchPostByID(postID int) (*models.Post, error) {
 	}
 	post.Categories = categories
 	return &post, nil
+}
+
+//FetchPostReaction fetches the number of likes and dislikes of a post based on postID
+func FetchPostReaction(postID int) (likes, dislikes int, err error) {
+	err = Database.QueryRow(
+		`SELECT
+		COALESCE(SUM(CASE WHEN value = 1 THEN 1 ELSE 0 END ),0) AS likes,
+        COALESCE(SUM(CASE WHEN value = -1 THEN 1 ELSE 0 END ),0) AS dislikes
+        FROM post_reactions
+        WHERE post_id = ?`,
+		postID,
+	).Scan(
+		&likes,
+		&dislikes,
+	)
+	if err != nil {
+		return 0, 0, err
+	}
+	return likes, dislikes, nil
 }

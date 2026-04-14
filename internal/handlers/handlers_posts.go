@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"net/url"
 	"regexp"
 	"slices"
 	"strconv"
@@ -266,19 +265,15 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 		util.ServerError(w, r, "Failed to react to post")
 		return
 	}
-
-	referer := r.Referer()
-	u, err := url.Parse(referer)
+	//Fetch post reaction
+	likes, dislikes, err := db.FetchPostReaction(postID)
 	if err != nil {
-		util.ClientError(w, r, http.StatusBadRequest, "invalid url ")
+		util.ServerError(w, r, "Failed to load reactions")
+		return
 	}
 
-	path := u.Path
-	if strings.HasPrefix(path, "/post/") {
-		http.Redirect(w, r, path, http.StatusSeeOther)
-	} else {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
+	// Send Json resp
+	WriteJson(w, likes, dislikes)
 }
 
 // togglePostReaction adds, removes, or swaps a user's reaction on a post.
