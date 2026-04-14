@@ -45,30 +45,27 @@
           {{end}}
         </div>
         <div class="reactions">
-          {{if $.User}}
-          <!-- LIKE BUTTON -->
-              <button 
-                type="button" 
-                data-post-id="{{.ID}}"
-                data-value="1"
-                class="ghost react-post">
-                Like 
-                <span class="reaction-count" id="likes-{{.ID}}">{{.Likes}}</span>
-              </button>
-              <!-- DISLIKE BUTTON -->
-              <button 
-                type="button" 
-                data-post-id="{{.ID}}"
-                data-value="-1"
-                class="ghost react-post">
-                Dislike 
-                <span class="reaction-count" id="dislikes-{{.ID}}">{{.Dislikes}}</span>
-              </button>
-          {{else}}
-            <button class="count">Like <span class="reaction-count">{{.Likes}}</span></button>
-            <button class="count">Dislike <span class="reaction-count">{{.Dislikes}}</span></button>
-            <span class="hint">Login to react</span>
-          {{end}}
+
+        <!-- LIKE BUTTON -->
+        <button 
+          type="button" 
+          data-post-id="{{.ID}}"
+          data-value="1"
+          class="ghost react-post">
+          Like 
+          <span class="reaction-count" id="likes-{{.ID}}">{{.Likes}}</span>
+        </button>
+        
+        <!-- DISLIKE BUTTON -->
+        <button 
+          type="button" 
+          data-post-id="{{.ID}}"
+          data-value="-1"
+          class="ghost react-post">
+          Dislike 
+          <span class="reaction-count" id="dislikes-{{.ID}}">{{.Dislikes}}</span>
+        </button>
+
         </div>
       </article>
     {{end}}

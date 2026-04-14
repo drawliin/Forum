@@ -13,7 +13,7 @@ btnPost.forEach(button => {
         const postID = this.dataset.postId;
         const value = this.dataset.value;
 
-        sendPostReaction(postID, value,this);
+        sendPostReaction(this, postID, value);
     });
 });
 
@@ -25,14 +25,14 @@ btnComment.forEach(button => {
         const commentID = this.dataset.commentId;
         const value = this.dataset.value;
         
-        sendCommentReaction(commentID, value, this)
+        sendCommentReaction(this, commentID, value)
     });
 });
 
 //Sends a post request when triggered with the value of the button
 //it then receives the Json with the number of likes/dislikes
 //and display them on the button using the id attribute
-function sendPostReaction(postID, value, button) {
+function sendPostReaction(button, postID, value) {
     
     button.disabled = true;
 
@@ -47,16 +47,17 @@ function sendPostReaction(postID, value, button) {
         .then(res => {
             if (!res.ok) {
                 return res.text().then(html => {
-                document.open();
-                document.writeln(html);
-                document.close();})  
+                    document.open();
+                    document.writeln(html);
+                    document.close();
+                })  
             }
-                // throw new Error("Request failed");
 
             const contentType = res.headers.get("content-type");
 
             if (!contentType|| !contentType.includes("application/json")) {
                 window.location.href = "/login";
+                console.log("redirected to login");
                 return;
             }
             return res.json();
@@ -77,7 +78,7 @@ function sendPostReaction(postID, value, button) {
 //using the comment id 
 //it then receives the Json with the number of likes/dislikes
 //and display them on the button using the id attribute
-function sendCommentReaction(commentID, value, button) {
+function sendCommentReaction(button, commentID, value) {
     
     button.disabled = true;
 
