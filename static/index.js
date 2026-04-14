@@ -1,33 +1,6 @@
 // Get buttons element for both posts and comments
-let btnPost = document.querySelectorAll(".react-post")
-let btnComment= document.querySelectorAll(".react-comment")
-
-//Add event listener on post buttons
-btnPost.forEach(button => {
-    button.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        //prevent redirection to post/id fron card's onclick
-        e.stopPropagation();
-        
-        const postID = this.dataset.postId;
-        const value = this.dataset.value;
-
-        sendPostReaction(this, postID, value);
-    });
-});
-
-//Add event listener on Comment buttons
-btnComment.forEach(button => {
-    button.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        const commentID = this.dataset.commentId;
-        const value = this.dataset.value;
-        
-        sendCommentReaction(this, commentID, value)
-    });
-});
+let btnPost
+let btnComment
 
 //Sends a post request when triggered with the value of the button
 //it then receives the Json with the number of likes/dislikes
@@ -115,3 +88,36 @@ function sendCommentReaction(button, commentID, value) {
             button.disabled = false;
         });
 }
+
+
+addEventListener("DOMContentLoaded", () => {
+    btnPost = document.querySelectorAll(".react-post");
+    btnComment = document.querySelectorAll(".react-comment");
+
+    //Add event listener on post buttons
+    if (btnPost){ // acount for pages that don't have posts (login etc...)
+        btnPost.forEach(button => {
+            button.addEventListener("click", function (e) {
+                //prevent redirection to post/id fron card's onclick
+                e.stopPropagation();
+                
+                const postID = this.dataset.postId;
+                const value = this.dataset.value;
+    
+                sendPostReaction(this, postID, value);
+            });
+        });
+    }
+
+    //Add event listener on Comment buttons
+    if (btnComment){
+        btnComment.forEach(button => {
+            button.addEventListener("click", function (e) {
+                const commentID = this.dataset.commentId;
+                const value = this.dataset.value;
+                
+                sendCommentReaction(this, commentID, value)
+            });
+        });
+    }
+});

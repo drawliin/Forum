@@ -273,7 +273,7 @@ func reactToPost(w http.ResponseWriter, r *http.Request, postID int) {
 	}
 
 	// Send Json resp
-	WriteJson(w, likes, dislikes)
+	util.WriteJson(w, likes, dislikes)
 }
 
 // togglePostReaction adds, removes, or swaps a user's reaction on a post.

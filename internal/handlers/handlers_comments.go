@@ -85,7 +85,7 @@ func reactToComment(w http.ResponseWriter, r *http.Request, commentID int) {
 	}
 
 	// Send Likes and Dislikes in Json resp
-	WriteJson(w, likes, dislikes)
+	util.WriteJson(w, likes, dislikes)
 }
 
 // toggleCommentReaction adds, removes, or swaps a user's reaction on a comment.
