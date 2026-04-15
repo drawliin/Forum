@@ -63,16 +63,16 @@ func Render(w http.ResponseWriter, name string, data models.TemplateData, status
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if status != 0 {
-		w.WriteHeader(status)
-	}
-
+	
 	buff := bytes.Buffer{}
 	err := tmpl.ExecuteTemplate(&buff, "base", data)
 	if err != nil {
 		log.Printf("render: %v", err)
 		http.Error(w, "Template error", http.StatusInternalServerError)
 	} else {
+		if status != 0 {
+			w.WriteHeader(status)
+		}
 		buff.WriteTo(w)
 	}
 }
