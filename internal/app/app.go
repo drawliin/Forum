@@ -7,8 +7,6 @@ import (
 	"forum/internal/templates"
 	"net/http"
 	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 // New prepares the shared parts of the app before requests start coming in.
