@@ -69,6 +69,18 @@
         </div>
       </article>
     {{end}}
+    <div class="pagination">
+      {{if .HasPrev}}
+      <a class="pagination-link" href="/?page={{.PrevPage}}{{.PageQuery}}">Prev</a>
+      {{else}}
+      <span class="pagination-link disabled" aria-disabled="true">Prev</span>
+      {{end}}
+      {{if .HasNext}}
+      <a class="pagination-link" href="/?page={{.NextPage}}{{.PageQuery}}">Next</a>
+      {{else}}
+      <span class="pagination-link disabled" aria-disabled="true">Next</span>
+      {{end}}
+    </div>
   {{else}}
     <div class="empty-state">
       <h3>No posts yet</h3>

@@ -49,4 +49,10 @@ type TemplateData struct {
 	FormError  string
 	Info       string
 	Status     int
+	HasNext    bool
+	HasPrev    bool
+	NextPage   int
+	PrevPage   int
+	Page       int
+	PageQuery  string
 }

@@ -1,13 +1,16 @@
 package db
 
 import (
+	"strconv"
 	"strings"
 
 	"forum/internal/models"
 )
 
+var PageSize int = 10
+
 // FetchPosts builds the home feed with optional user and category filters.
-func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post, error) {
+func FetchPosts(user *models.User, categoryID int, filter string, offset int) ([]models.Post, error) {
 	query := `SELECT p.id, p.title, p.content, p.user_id, u.username, p.created_at,
         (SELECT COUNT(*) FROM post_reactions pr WHERE pr.post_id = p.id AND pr.value = 1) AS likes,
         (SELECT COUNT(*) FROM post_reactions pr WHERE pr.post_id = p.id AND pr.value = -1) AS dislikes
@@ -33,7 +36,8 @@ func FetchPosts(user *models.User, categoryID int, filter string) ([]models.Post
 	if len(where) > 0 {
 		query += " WHERE " + strings.Join(where, " AND ")
 	}
-	query += " ORDER BY p.created_at DESC"
+	query += " ORDER BY p.created_at DESC LIMIT " + strconv.Itoa(PageSize+1) + " OFFSET ?"
+	args = append(args, offset)
 
 	rows, err := Database.Query(query, args...)
 	if err != nil {
@@ -109,7 +113,7 @@ func FetchPostByID(postID int) (*models.Post, error) {
 	return &post, nil
 }
 
-//FetchPostReaction fetches the number of likes and dislikes of a post based on postID
+// FetchPostReaction fetches the number of likes and dislikes of a post based on postID
 func FetchPostReaction(postID int) (likes, dislikes int, err error) {
 	err = Database.QueryRow(
 		`SELECT

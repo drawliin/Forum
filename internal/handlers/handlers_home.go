@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"net/url"
 	"slices"
 	"strconv"
 
@@ -60,7 +61,17 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := db.FetchPosts(user, categoryID, filter)
+	page := 1
+	if value := r.URL.Query().Get("page"); value != "" {
+		page, err = strconv.Atoi(value)
+		if err != nil || page < 1 {
+			util.ClientError(w, r, http.StatusBadRequest, "Invalid page")
+			return
+		}
+	}
+
+	offset := (page - 1) * db.PageSize
+	posts, err := db.FetchPosts(user, categoryID, filter, offset)
 	if err != nil {
 		util.ServerError(w, r, "Failed to load posts")
 		return
@@ -72,6 +83,30 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		Posts:      posts,
 		Filter:     filter,
 		CategoryID: categoryID,
+		Page:       page,
+	}
+
+	if len(data.Posts) > db.PageSize {
+		data.HasNext = true
+		data.Posts = data.Posts[:db.PageSize]
+	}
+	if page > 1 {
+		data.HasPrev = true
+		data.PrevPage = page - 1
+	}
+	if data.HasNext {
+		data.NextPage = page + 1
+	}
+
+	params := url.Values{}
+	if filter != "" {
+		params.Set("filter", filter)
+	}
+	if categoryID > 0 {
+		params.Set("category", strconv.Itoa(categoryID))
+	}
+	if encoded := params.Encode(); encoded != "" {
+		data.PageQuery = "&" + encoded
 	}
 	templates.Render(w, "home", data, 0)
 }
