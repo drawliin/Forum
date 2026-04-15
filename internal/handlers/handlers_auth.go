@@ -42,7 +42,10 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		email := strings.TrimSpace(r.FormValue("email"))
 		email = strings.ToLower(email)
+
 		username := strings.TrimSpace(r.FormValue("username"))
+		username = strings.ToLower(username)
+
 		password := r.FormValue("password")
 
 		// Trying to fix
@@ -121,6 +124,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		email := strings.TrimSpace(r.FormValue("email"))
 		email = strings.ToLower(email)
+		
 		password := r.FormValue("password")
 
 		if email == "" || password == "" {
